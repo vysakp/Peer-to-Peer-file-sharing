@@ -1,0 +1,98 @@
+13/10/2022 15:38:41 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:41 Error:	Client connection to server failed waiting for 1 sec
+13/10/2022 15:38:42 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:42 Error:	Client connection to server failed waiting for 1 sec
+13/10/2022 15:38:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:43 Error:	Client connection to server failed waiting for 1 sec
+13/10/2022 15:38:44 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:44 Error:	Client connection to server failed waiting for 1 sec
+13/10/2022 15:38:44 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 1306Backlog:20
+13/10/2022 15:38:44 Debug:	Creating a socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 15:38:45 Debug:	Connected to server sending chunk of size100
+13/10/2022 15:38:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:40 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 1306Backlog:20
+13/10/2022 16:25:40 Debug:	Creating a socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+13/10/2022 16:25:43 Debug:	Connected to server sending chunk of size100
+13/10/2022 16:25:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
