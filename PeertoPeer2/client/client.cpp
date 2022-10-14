@@ -19,8 +19,8 @@ typedef unsigned long           u_long;
 
 
 
-#define TRACKER_PORT 4000
-#define CHUNK_SIZE 100
+#define TRACKER_PORT 4022
+#define WORD_SIZE 1024
 
 BasicLogger c_log;
 
@@ -96,12 +96,12 @@ void* server_function(void *arg){
 
         int client = accept(server.socket, address, &address_length);
 
-        char *buffer = new char[CHUNK_SIZE];
-        memset(buffer, 0, CHUNK_SIZE);
+        char *buffer = new char[WORD_SIZE];
+        memset(buffer, 0, WORD_SIZE);
 
         size_t size;
         while (true) {
-            size = read(client, buffer, CHUNK_SIZE);
+            size = read(client, buffer, WORD_SIZE);
             if(size<0){
                 std::cout<<"Error";
             }
@@ -124,47 +124,8 @@ struct Client
     int protocol;
     int port;
     u_long interface;
-    /* PUBLIC MEMBER METHODS */
-    // The request method allows a client to make a request of a specified server.
-    char * (*request)(struct Client *client, char *server_ip, void *request, unsigned long size);
 };
 
-char * request_fun(struct Client *client, char *server_ip, void *request, unsigned long size)
-{
-    // Create an address struct for the server.
-    int client_fd;
-    struct sockaddr_in server_address;
-    // Copy the client's parameters to this address.
-    server_address.sin_family = client->domain;
-    server_address.sin_port = htons(client->port);
-    server_address.sin_addr.s_addr = (int)client->interface;
-    // Make the connection.
-    inet_pton(client->domain, server_ip, &server_address.sin_addr);
-    // connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address));
-
-    if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        std::cout<<"Connection failed Server not Live";
-        c_log.Log(ErrorP, "Client connection to server failed waiting for 1 sec");
-        usleep(1000000);
-        return NULL;
-        // exit(1);
-    }
-
-    std::stringstream log_string;
-    log_string << "Connected to server sending chunk of size"<<size; 
-    c_log.Log(DebugP, log_string.str());
-
-    // Send the request;
-    write(client->socket, request, size);
-    // Read the response.
-
-
-    char *response = new char[CHUNK_SIZE];
-    read(client->socket, response, CHUNK_SIZE);
-
-    return response;
-    // return NULL;
-}
 
 void connect_to_tracker(struct Client *client, char* tracker_ip){
     int client_fd;
@@ -199,27 +160,70 @@ struct Client client_constructor(int domain, int service, int protocol, int port
     c_log.Log(DebugP, log_string.str()); 
 
     client.socket = socket(domain, service, protocol);
-    client.request = request_fun;
     // Return the constructed socket.
     return client;
 }
 
 
+void handleCMD(char* cmd, int client_socket){
 
-char* client_function(char * request, int port, size_t size){
-    // std::string temp = std::string(request);
-    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, port, INADDR_ANY);
-    char server_ip[] = "127.0.0.1";
-    // int size_of_req = strlen(request);
-    char* resposne = client.request(&client, server_ip, request, size);
-    close(client.socket);
-    return resposne;
+        
+        
+
+        
+
+        if(strcmp(cmd, "create_user") == 0){
+            c_log.Log(DebugP, "Executing create_user operation"); 
+        }
+        else if(strcmp(cmd, "login") == 0){
+            c_log.Log(DebugP, "Executing login operation"); 
+        }
+        else if(strcmp(cmd, "create_group") == 0){
+            c_log.Log(DebugP, "Executing create_group operation"); 
+        }
+        else if(strcmp(cmd, "join_group") == 0){
+            c_log.Log(DebugP, "Executing join_group operation"); 
+        }
+        else if(strcmp(cmd, "leave_group") == 0){
+            c_log.Log(DebugP, "Executing leave_group operation"); 
+        }
+        else if(strcmp(cmd, "list_requests") == 0){
+            c_log.Log(DebugP, "Executing list_requests operation"); 
+        }
+        else if(strcmp(cmd, "accept_request") == 0){
+            c_log.Log(DebugP, "Executing accept_request operation"); 
+        }
+        else if(strcmp(cmd, "list_groups") == 0){
+            c_log.Log(DebugP, "Executing list_groups operation"); 
+        }
+        else if(strcmp(cmd, "list_files") == 0){
+            c_log.Log(DebugP, "Executing list_files operation"); 
+        }
+        else if(strcmp(cmd, "upload_file") == 0){
+            c_log.Log(DebugP, "Executing upload_file operation"); 
+        }
+        else if(strcmp(cmd, "download_file") == 0){
+            c_log.Log(DebugP, "Executing download_file operation"); 
+        }
+        else if(strcmp(cmd, "logout") == 0){
+            c_log.Log(DebugP, "Executing logout operation"); 
+        }
+        else if(strcmp(cmd, "show_downloads") == 0){
+            c_log.Log(DebugP, "Executing show_downloads operation"); 
+        }
+        else if(strcmp(cmd, "stop_share") == 0){
+            c_log.Log(DebugP, "Executing stop_share operation"); 
+        }
+        else {
+            c_log.Log(DebugP, "Wrong command executed"); 
+        }
+
 }
 
 
 int main(){
     int port;
-    std::cout<<"Enter port number";
+    std::cout<<"Enter port number: ";
     std::cin>>port;
 
     // int port = 2023;
@@ -228,8 +232,8 @@ int main(){
 
     pthread_create(&server_thread, NULL, server_function, &port);
 
-    char *buffer = new char[CHUNK_SIZE];
-    memset(buffer, 0, CHUNK_SIZE);
+    char *cmd = new char[WORD_SIZE];
+    memset(cmd, 0, WORD_SIZE);
     size_t size;
 
     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, TRACKER_PORT, INADDR_ANY);
@@ -237,49 +241,36 @@ int main(){
 
     connect_to_tracker(&client, server_ip);
 
-    
+
+    //ignoring any inputs 
+    std::cin.ignore();
 
     while(true){
         
         std::string input_cmd;
-        std::cout<<"Enter command:";
-        std::cin>>buffer;
+        std::cout<<"Enter command: ";
+        // std::cin>>input_cmd;
+        std::getline(std::cin,input_cmd);
+        // std::cin>>cmd;
         // char* buffer = "Hi";
-        input_cmd = buffer;  
+        // input_cmd = cmd;  
 
-        write(client.socket, buffer, input_cmd.size());
+        write(client.socket, &input_cmd[0], input_cmd.size());
 
-        char *response = new char[CHUNK_SIZE];
-        size = read(client.socket, response, CHUNK_SIZE);
+
+        char *response = new char[WORD_SIZE];
+        size = read(client.socket, response, WORD_SIZE);
 
         if(size<=0){
             std::cout<<"Read operation failed";
             exit(1);
         }
-        
-
         std::cout<<response;
+        // handleCMD(cmd, client.socket)
+
+        
     }
     close(client.socket);
-
-
-
-    
-
-    // while(true){
-    //     // std::string input_cmd;
-    //     // std::cout<<"Enter command:";
-    //     // std::cin>>buffer;
-    //     // input_cmd = buffer;    
-    //     // client_function(buffer, port, input_cmd.size());
-        
-    //     char *buffer =  "create_user";
-    //     // char* response = client.request(&client, server_ip, buffer, 12);
-    //     char* response = client_function(buffer, TRACKER_PORT, 12);
-    //     std::cout<<response;
-    // }
-
-
 
     return 0;
 }

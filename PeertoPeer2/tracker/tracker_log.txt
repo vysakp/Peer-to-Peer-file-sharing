@@ -29,3 +29,187 @@
 13/10/2022 22:30:6 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
 13/10/2022 22:35:25 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
 13/10/2022 22:35:25 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+13/10/2022 23:17:30 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
+13/10/2022 23:17:30 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:25:30 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
+14/10/2022 11:25:30 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:27:7 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
+14/10/2022 11:27:7 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:27:7 Error:	Failed to bind socket...
+14/10/2022 11:27:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
+14/10/2022 11:27:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:27:16 Error:	Failed to bind socket...
+14/10/2022 11:27:35 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4000Backlog:20
+14/10/2022 11:27:35 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:27:35 Error:	Failed to bind socket...
+14/10/2022 11:27:46 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4001Backlog:20
+14/10/2022 11:27:46 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:29:52 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4001Backlog:20
+14/10/2022 11:29:52 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:29:52 Error:	Failed to bind socket...
+14/10/2022 11:30:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4002Backlog:20
+14/10/2022 11:30:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:33:9 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4002Backlog:20
+14/10/2022 11:33:9 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:33:9 Error:	Failed to bind socket...
+14/10/2022 11:33:23 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4002Backlog:20
+14/10/2022 11:33:23 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:33:23 Error:	Failed to bind socket...
+14/10/2022 11:33:48 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 11:33:48 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:34:25 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 11:34:25 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 11:34:55 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 11:34:55 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:7:32 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:7:32 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:8:4 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:8:4 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:8:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:8:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:12:53 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:12:53 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:15:6 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:15:6 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:15:17 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:15:17 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:17:25 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:17:25 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:20:36 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:20:36 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:21:4 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:21:4 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:22:12 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4003Backlog:20
+14/10/2022 13:22:12 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:22:12 Error:	Failed to bind socket...
+14/10/2022 13:22:38 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4004Backlog:20
+14/10/2022 13:22:38 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:23:31 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4004Backlog:20
+14/10/2022 13:23:31 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:23:40 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4004Backlog:20
+14/10/2022 13:23:40 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:25:34 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4004Backlog:20
+14/10/2022 13:25:34 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:25:34 Error:	Failed to bind socket...
+14/10/2022 13:25:58 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:25:58 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:27:44 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:27:44 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:35:0 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:35:0 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:37:5 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:37:5 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:39:22 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:39:22 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:41:1 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:41:1 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:41:32 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4005Backlog:20
+14/10/2022 13:41:32 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:41:32 Error:	Failed to bind socket...
+14/10/2022 13:41:50 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4006Backlog:20
+14/10/2022 13:41:50 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:46:39 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4006Backlog:20
+14/10/2022 13:46:39 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:48:58 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4006Backlog:20
+14/10/2022 13:48:58 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:48:58 Error:	Failed to bind socket...
+14/10/2022 13:50:11 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4007Backlog:20
+14/10/2022 13:50:11 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:57:36 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4007Backlog:20
+14/10/2022 13:57:36 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 13:57:36 Error:	Failed to bind socket...
+14/10/2022 13:58:5 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4008Backlog:20
+14/10/2022 13:58:5 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:1:47 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4008Backlog:20
+14/10/2022 14:1:47 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:10:47 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4008Backlog:20
+14/10/2022 14:10:47 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:10:47 Error:	Failed to bind socket...
+14/10/2022 14:11:11 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:11:11 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:12:53 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:12:53 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:16:54 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:16:54 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:18:44 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:18:44 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:23:27 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:23:27 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 14:24:4 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 14:24:4 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:1:53 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 15:1:53 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:3:48 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4009Backlog:20
+14/10/2022 15:3:48 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:3:48 Error:	Failed to bind socket...
+14/10/2022 15:4:19 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4010Backlog:20
+14/10/2022 15:4:19 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:16:11 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4010Backlog:20
+14/10/2022 15:16:11 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:16:11 Error:	Failed to bind socket...
+14/10/2022 15:16:46 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4011Backlog:20
+14/10/2022 15:16:46 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:19:17 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4011Backlog:20
+14/10/2022 15:19:17 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 15:19:17 Error:	Failed to bind socket...
+14/10/2022 15:21:29 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 15:21:29 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 17:38:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 17:38:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 17:40:11 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 17:40:11 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 17:41:2 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 17:41:2 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 17:42:21 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 17:42:21 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 17:42:39 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 17:42:39 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 18:13:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 18:13:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 18:13:16 Error:	Failed to bind socket...
+14/10/2022 20:32:49 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 20:32:49 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:34:27 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 20:34:27 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:38:58 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4012Backlog:20
+14/10/2022 20:38:58 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:38:58 Error:	Failed to bind socket...
+14/10/2022 20:39:29 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4013Backlog:20
+14/10/2022 20:39:29 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:41:13 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4013Backlog:20
+14/10/2022 20:41:13 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:41:13 Error:	Failed to bind socket...
+14/10/2022 20:41:34 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4014Backlog:20
+14/10/2022 20:41:34 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:46:33 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4014Backlog:20
+14/10/2022 20:46:33 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:46:33 Error:	Failed to bind socket...
+14/10/2022 20:46:50 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4015Backlog:20
+14/10/2022 20:46:50 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:49:37 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4015Backlog:20
+14/10/2022 20:49:37 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:49:37 Error:	Failed to bind socket...
+14/10/2022 20:49:50 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4016Backlog:20
+14/10/2022 20:49:50 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 20:55:48 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4017Backlog:20
+14/10/2022 20:55:48 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:0:9 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4018Backlog:20
+14/10/2022 21:0:9 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:1:54 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4019Backlog:20
+14/10/2022 21:1:54 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:5:23 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4020Backlog:20
+14/10/2022 21:5:23 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:11:44 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4021Backlog:20
+14/10/2022 21:11:44 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:15:53 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 21:15:53 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:17:53 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 21:17:53 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 21:22:57 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 21:22:57 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 23:10:50 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 23:10:50 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 23:25:6 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 23:25:6 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+14/10/2022 23:32:26 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4022Backlog:20
+14/10/2022 23:32:26 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0

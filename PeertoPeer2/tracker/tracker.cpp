@@ -16,6 +16,51 @@
 #include<vector>
 #include <chrono>
 #include <thread>
+#include <unordered_map>
+#include <unordered_set>
+
+//Datastuctures 
+struct User {
+    std::string user_id;
+    std::string user_pwd;
+    int port;
+    bool is_live;
+    User(){
+
+    }
+    User(std::string _uid, std::string _upwd){
+        user_id = _uid;
+        user_pwd = _upwd;
+        is_live = false;
+    }
+};
+
+struct Group {
+    std::string group_id;
+    std::string owner_id;
+    std::unordered_set<std::string> members;
+    std::unordered_set<std::string> requests;
+    Group(){
+    }
+    Group(std::string _gid, std::string _oid){
+        group_id = _gid;
+        owner_id = _oid;
+    }
+};
+
+
+//map of all users 
+std::unordered_map<std::string, User> AllUsers;
+
+//map of all groups
+//gourpuuid -> Group
+std::unordered_map<std::string, Group> AllGroups;
+
+//map of user to group list
+//user->grouplist
+std::unordered_map<std::string, std::unordered_set<std::string>> UserGroupMap;
+
+
 
 typedef unsigned long           u_long;
 
@@ -82,66 +127,348 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
     
 }
 
+bool create_new_user(std::string user_id, std::string user_pwd){
+    if(AllUsers.find(user_id)==AllUsers.end()){
+        User* new_user = new User(user_id, user_pwd);
+        AllUsers[user_id] = *new_user;
+        new_user->is_live = true;
+        return true;
+    }
+    else
+        return false;
+
+}
+
+int add_group(std::string user_id, std::string group_id){
+    std::string group_uuid = user_id + "_" + group_id;
+
+     if(AllGroups.find(group_id)==AllGroups.end()){
+        //given group doesn't exist
+        Group *new_group = new Group(group_id, user_id);
+        //adding owner to memeber list
+        new_group->members.insert(user_id);
+
+        UserGroupMap[user_id].insert(group_id);
+        AllGroups[group_id] = *new_group;
+        return 0;
+     }
+     else{
+        //group exists
+        return -1;
+     }
+    
+}
+int join_group(std::string cur_usr, std::string group){
+
+    if(AllGroups.find(group)==AllGroups.end()){
+        //group does not exists
+        return -1;
+    }
+    else{
+        Group *join_grp = &AllGroups[group];
+        if(join_grp->requests.find(cur_usr)!=join_grp->requests.end()){
+            //request already exists
+            return 0;
+        }
+        else{
+            join_grp->requests.insert(cur_usr);
+            return 1;
+        }
+
+    }
+}
+
+
+int list_group_req(std::string cur_usr, std::string group){
+    if(AllGroups.find(group)==AllGroups.end()){
+        //group does not exists
+        return -1;
+    }
+    else{
+        Group *grp = &AllGroups[group];
+        if(grp->owner_id!=cur_usr)
+            return 0;
+        else
+            return 1;
+    }
+
+}
+
+int accept_group_req(std::string cur_usr, std::string peer_usr, std::string group){
+    if(AllGroups.find(group)==AllGroups.end()){
+        //group does not exists
+        return -1;
+    }
+    else{
+        Group *grp = &AllGroups[group];
+        if(grp->owner_id!=cur_usr)
+            return 0;
+        else{
+            if(grp->requests.find(peer_usr)!=grp->requests.end()){
+                grp->requests.erase(peer_usr);
+                grp->members.insert(peer_usr);
+                return 1;
+            }
+            else
+                return -2;
+        }
+    }
+}
+
+    // if(UserGroupMap.find(user_id) != UserGroupMap.end()){
+    //     //user already have some groups 
+    //     if(AllGroups.find(group_id)==AllGroups.end()){
+    //         //given group doesn't exist
+    //         Group *new_group = new Group(group_id, user_id);
+
+    //         //adding owner to memeber list
+    //         new_group->members.insert(user_id);
+
+    //         UserGroupMap[user_id].insert(group_id);
+    //         AllGroups[group_uuid] = *new_group;
+    //         return 0;
+    //     }
+    //     else{
+    //         //given group exists;
+    //         return -1;
+    //     }
+    // }
+    // else{
+        //user creating group for the first time
+
+    //     Group *new_group = new Group(group_id, user_id);
+    //     new_group->members.insert(user_id);
+
+    //     std::unordered_set<std::string> group_set;
+    //     group_set.insert(group_id);
+
+    //     UserGroupMap[user_id].insert(group_id);
+    //     AllGroups[group_uuid] = *new_group;
+    //     return 1;
+    // }
+
+
 void* handle_connection(int  client_socket){
 
     // int* client_socket = (int *)arg;
-
+    std::string cur_user = "";
+    const char* c_user;
     while(true)
-    {
+    {   
+        
         char client_req[1024] = {0};
-        size_t size;
-        size = read(client_socket, client_req, 1024);
+        // size_t size;
 
-        if(size<=0){
+        // size = read(client_socket, client_req, 1024);
+
+        
+
+        if(read(client_socket, client_req, 1024)<=0){
             close(client_socket);
             break;
         }
-        std::string input = client_req;
+        
 
-        if(input == "create_user"){
-            write(client_socket, "Input is create_user", 20);
+        std::string tmp, input = client_req;
+        std::stringstream ss(input);
+        std::vector<std::string> input_cmd;
+        while(ss>>tmp){
+                input_cmd.push_back(tmp);
         }
-        else if(input == "login"){
-            write(client_socket, "Input is login", 20);
+        
+        // std::cout<<input_cmd[0]<<'\n';
+
+        if(input_cmd[0] == "create_user"){
+            if(input_cmd.size()!=3)
+                write(client_socket, "Invalid number of arguments\n", 28);
+
+            else if(create_new_user(input_cmd[1],input_cmd[2]))
+            {
+                write(client_socket, "New user created\n", 17);
+                std::cout<<"New user "<<input_cmd[1]<<" created"<<'\n';
+                }
+            else
+                write(client_socket, "User already exists\n", 20);
         }
-        else if(input == "create_group"){
-            write(client_socket, "Input is create_group", 20);
+
+        else if(input_cmd[0] == "login"){
+
+            if(input_cmd.size()!=3)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else if(AllUsers.find(input_cmd[1])==AllUsers.end())
+                write(client_socket, "User doesn't exist\n", 19);
+            else if(AllUsers[input_cmd[1]].is_live)
+                write(client_socket, "User have an active session\n", 28);
+            else{
+                AllUsers[input_cmd[1]].is_live = true;
+                cur_user += input_cmd[1];
+                write(client_socket, "Login successful\n", 17);
+                std::cout<<cur_user<<" Logged in"<<'\n';
+                
+            }
+            
         }
-        else if(input == "join_group"){
-            write(client_socket, "Input is join_group", 20);
+
+
+        else if(input_cmd[0] == "create_group"){
+            
+            if(input_cmd.size()!=2)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else if(cur_user.size()==0)
+                write(client_socket, "Please log in to create a group\n", 32);
+            else {
+                int res = add_group(cur_user, input_cmd[1]);
+                if(res < 0 )
+                    write(client_socket, "Group id already exists\n", 24);
+                else{
+                    write(client_socket, "Group created\n", 15);
+                    std::cout<<"Group "<<input_cmd[1]<<"created\n";
+                    }
+            }
+
         }
-        else if(input == "leave_group"){
+
+
+        else if(input_cmd[0] == "join_group"){
+            if(input_cmd.size()!=2)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else if(cur_user.size()==0)
+                write(client_socket, "Please log in to join a group\n", 32);
+            else {
+                int res = join_group(cur_user,input_cmd[1]);
+                if(res==-1)
+                    write(client_socket, "Group does not exists\n", 32);    
+                else if(res==0)
+                    write(client_socket, "Request in pending state\n", 32);
+                else
+                    write(client_socket, "Request sent\n", 32);
+            }
+        }
+
+
+        else if(input_cmd[0] == "leave_group"){
+            if(input_cmd.size()!=2)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            //Continue here ...
             write(client_socket, "Input is leave_group", 20);
         }
-        else if(input == "list_requests"){
-            write(client_socket, "Input is list_requests", 20);
+
+
+        else if(input_cmd[0] == "list_requests"){
+            if(input_cmd.size()!=2)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else if(cur_user.size()==0)
+                write(client_socket, "Please log in to get requests\n", 32);
+            else
+            { 
+                int res = list_group_req(cur_user, input_cmd[1]);
+
+                if(res==-1)
+                    write(client_socket, "Group does not exists\n", 32);
+                else if(res==0)
+                    write(client_socket, "You are not the owner to this group\n", 32);
+                else if(AllGroups[input_cmd[1]].requests.empty())
+                    write(client_socket, "No pending requests\n", 32);
+                else {
+
+                    std::string all_reqs = "";
+
+                    for(auto req : AllGroups[input_cmd[1]].requests){
+                        all_reqs += (req+ '\n');
+
+                    write(client_socket, &all_reqs[0], all_reqs.size());
+                }
+
+                }
+
+            }
         }
-        else if(input == "accept_request"){
+
+
+        else if(input_cmd[0] == "accept_request"){
+            if(input_cmd.size()!=3)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else if(cur_user.size()==0)
+                write(client_socket, "Please log in to get requests\n", 32);
+            else{
+                
+                int res = accept_group_req(cur_user, input_cmd[2], input_cmd[1]);
+                switch(res){
+                    case -2: 
+                        write(client_socket, "Request not present\n", 32);
+                        break;
+                    case -1:
+                        write(client_socket, "Group does not exists\n", 32);
+                        break;
+                    case 0:
+                        write(client_socket, "You are not the owner to this group\n", 32);
+                        break;
+                    case 1:
+                        write(client_socket, "Request accepted\n", 32);
+                        break;
+                    default:
+                        write(client_socket, "Welcome to Narnia\n", 20);
+                }
+            }
+
+
             write(client_socket, "Input is accept_request", 20);
         }
-        else if(input == "list_groups"){
-            write(client_socket, "Input is list_groups", 20);
+
+        else if(input_cmd[0] == "list_groups"){
+            if(input_cmd.size()!=1)
+                write(client_socket, "Invalid number of arguments\n", 28);
+            else{
+                std::string all_groups = "";
+                for(auto group_map : AllGroups){
+                    all_groups += (group_map.first+ '\n');
+                }
+                write(client_socket, &all_groups[0], all_groups.size());
+
+            }
         }
-        else if(input == "list_files"){
+
+
+
+        else if(input_cmd[0] == "list_files"){
             write(client_socket, "Input is list_files", 20);
         }
-        else if(input == "upload_file"){
+
+
+        else if(input_cmd[0] == "upload_file"){
             write(client_socket, "Input is upload_file", 20);
         }
-        else if(input == "download_file"){
+
+
+        else if(input_cmd[0] == "download_file"){
             write(client_socket, "Input is download_file", 20);
         }
-        else if(input == "logout"){
-            write(client_socket, "Input is logout", 20);
+
+
+        else if(input_cmd[0] == "logout"){
+            if(cur_user.size()==0){
+                write(client_socket, "User not logged in\n", 32);
+            }
+            else if(!AllUsers[cur_user].is_live)
+                 write(client_socket, "User already logged out\n", 32);
+
+            else{
+                AllUsers[cur_user].is_live = false;
+                write(client_socket, "User logged out\n", 20);
+            }
         }
-        else if(input == "show_downloads"){
+
+
+        else if(input_cmd[0] == "show_downloads"){
             write(client_socket, "Input is show_downloads", 20);
         }
-        else if(input == "stop_share"){
+
+
+        else if(input_cmd[0] == "stop_share"){
             write(client_socket, "Input is stop_share", 20);
         }
         else {
-            write(client_socket, "Invalid command", 20);
+            write(client_socket, "Invalid command\n", 20);
         }
 
 
@@ -168,30 +495,41 @@ void* quit_function(void* arg){
 }
 
 int main(){
-
-    int port = 4000;
+    
+    int port = 4022;
     struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);
     pthread_t exitTread;
 
+
     pthread_create(&exitTread, NULL, quit_function, &Tracker.socket);
+    // std::thread exitThread(quit_function, Tracker.socket);
+
+
 
     //Vector of threads for each incoming client connection
     std::vector<std::thread> vTreads;
+    
 
     while(true){
         int client_socket;
         
+        
         if((client_socket = accept(Tracker.socket, address, &address_length))<0){
-            std::cout<<"connection created...";
-            perror("Tracker failed to accept");
+            std::cout<<"connection created..."<<'\n';
+            // perror("Tracker failed to accept");
         }
+
+        // printf("C Programming");
+        // std::cout<<"hi"<<'\n';
+        
 
         //creating a new thread for the client 
         // pthread_t new_client;
         // pthread_create(&new_client, NULL, handle_connection, (void *)client_socket);
         vTreads.push_back(std::thread(handle_connection, client_socket));
+        
         // handle_connection(client_socket);
     }
 
