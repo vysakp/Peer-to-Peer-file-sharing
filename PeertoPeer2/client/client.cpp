@@ -23,7 +23,7 @@ typedef unsigned long           u_long;
 
 
 
-#define TRACKER_PORT 4023
+#define TRACKER_PORT 4024
 #define WORD_SIZE 1024
 #define CHUNK_SIZE 512*1024
 
@@ -108,6 +108,56 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
     
 }
 
+struct Client
+{
+    /* PUBLIC MEMBER VARIABLES */
+    int socket;
+    // Variables dealing with the specifics of a connection.
+    int domain;
+    int service;
+    int protocol;
+    int port;
+    u_long interface;
+};
+
+void connect_to_server(struct Client *client, char* server_ip){
+    int client_fd;
+    struct sockaddr_in server_address;
+
+    //Tracker's info
+    server_address.sin_family = client->domain;
+    server_address.sin_port = htons(client->port);
+    server_address.sin_addr.s_addr = (int)client->interface;
+
+    inet_pton(client->domain, server_ip, &server_address.sin_addr);
+
+    if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
+        std::cout<<"Connection failed Server not Live";
+        c_log.Log(ErrorP, "Client connection to tracker failed waiting for 1 sec");
+        usleep(1000000);
+        // exit(1);
+    }
+}
+
+struct Client client_constructor(int domain, int service, int protocol, int port, u_long interface)
+{
+    // Instantiate a client object.
+    struct Client client;
+    client.domain = domain;
+    client.port = port;
+    client.interface = interface;
+
+    // Establish a socket connection.
+    std::stringstream log_string;
+    log_string << "Creating a client side socket with Domain: "<< domain<<"Service:"<<service<<"Protocol:"<<protocol;
+    c_log.Log(DebugP, log_string.str()); 
+
+    client.socket = socket(domain, service, protocol);
+    // Return the constructed socket.
+    return client;
+}
+
+
 std::string BitmapToString(std::string file_path){
     std::vector<bool> bitmap = ULFile[file_path].bit_map;
     std::string res = "";
@@ -123,49 +173,139 @@ std::string BitmapToString(std::string file_path){
 
 }
 
-void ReadChunk(int socket_fd, u_long chunk_no, std::string file_loc, int chunk_size){
-    
-    size_t tot_send = 0;
-    // u_long chunk_size = CHUNK_SIZE;
+void get_response(std::string input_cmd, int client_socket, char* response){
 
-    while(tot_send<chunk_size){
-        char *buffer = new char[chunk_size];
-        memset(buffer, 0, chunk_size);
-        size_t size = read(socket_fd, buffer, chunk_size-1);
+    memset(response,0,WORD_SIZE);
+    write(client_socket, &input_cmd[0], input_cmd.size());
+    //WARNING: we are returning the response from the stack memory of this funciton 
+    // char response[WORD_SIZE];
+    // memset(response,0,WORD_SIZE);
+    size_t size = read(client_socket, response, WORD_SIZE);
+
+    if(size<=0){
+        std::cout<<"Read operation failed";
+        exit(1);
+    }
+    // return response;
+}
+
+void send_user_message(std::string peer_ip, int peer_port, std::string input_cmd, char* response){
+    
+    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+
+    connect_to_server(&client, &peer_ip[0]);
+
+    // char response[WORD_SIZE];
+    // memset(response,0,WORD_SIZE);
+    // std::cout<<"C side: sending command "<<input_cmd<<'\n';
+    get_response(input_cmd, client.socket, response);
+    // std::cout<<"C side: got response "<<response<<'\n';
+
+    close(client.socket);
+    // std::cout<<response;
+
+
+}
+
+void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::string file_loc, int chunk_size){
+    
+    // struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+
+    // connect_to_server(&client, &peer_ip[0]);
+
+    std::string tmp;
+    std::stringstream ss(input_cmd);
+    std::vector<std::string> Vinput;
+    while(ss>>tmp){
+            Vinput.push_back(tmp);
+    }
+    size_t tot_send = 0;
+
+    int chunk_no = stoi(Vinput[1]);
+
+    // u_long chunk_size = CHUNK_SIZE;
+    // std::cout<<"C side: Writing to file "<<file_loc<<'\n';
+    int dest = open(&file_loc[0], O_RDWR | O_CREAT, 0666);
+    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+    connect_to_server(&client, &peer_ip[0]);
+
+
+    // std::cout<<"C side: Requesting.... "<<'\n';
+    write(client.socket, &input_cmd[0], input_cmd.size());
+
+    while(tot_send<=chunk_size){
+        char response[chunk_size];
+        memset(response,0,chunk_size);
+        // std::cout<<"C side: reading buffer "<<'\n';
+        // std::cout<<"C side: Reading.... "<<'\n';
+        size_t size = read(client.socket, response, CHUNK_SIZE);
+        // std::cout<<"C side: Read complete.... "<<'\n';
+
         if(size<=0){
-            close(socket_fd);
-            // break;
+            std::cout<<"Read operation failed";
+            // exit(1);
+            break;
         }
 
-        // write(dest, buf, size);
-        std::fstream outfile(file_loc, std::fstream::in | std::fstream::out | std::fstream::binary);
-        outfile.seekp(chunk_no*CHUNK_SIZE+tot_send, std::ios::beg);
-        outfile.write(buffer, size);
-        outfile.close();
+        // std::cout<<"C side: Reading  buffer complete "<<'\n';
+        // std::cout<<"C side: buffer = "<<response<<'\n';
+        // std::cout<<"C side: tot_send = "<<tot_send<<'\n';
 
+        ssize_t nw =  pwrite(dest, response, size, chunk_no*CHUNK_SIZE + tot_send);
+        // std::cout<<nw<<" "<<size<<" "<<tot_send<<'\n';
         tot_send+=size;
+
+        // if(size<0){
+        //     close(client.socket);
+        //     // break;
+        // }
+
+        // write(dest, buf, size);
+        // std::fstream outfile(file_loc, std::fstream::in | std::fstream::out | std::fstream::binary);
+        // // outfile.seekp(chunk_no*CHUNK_SIZE+tot_send, std::ios::beg);
+        // outfile.write(response, chunk_size);
+        // outfile.close();
+        // std::cout<<"C side: File write done "<<'\n';
+
+        // tot_send+=chunk_size;
     }
+    close(dest);
+    close(client.socket);
+    // close(client.socket);
+
 
 }
 
 void WriteChunk(int socket_fd, u_long chunk_no, std::string file_loc){
-
-    std::ifstream fp(file_loc.c_str(), std::ios::in|std::ios::binary);
-
-    fp.seekg(chunk_no*CHUNK_SIZE, fp.beg);
-
+    
+    std::cout<<"S side: Write chunk "<<'\n';
+    // std::ifstream fp(file_loc.c_str(), std::ios::in|std::ios::binary);
+    std::ifstream file;
+    file.open(file_loc, std::ios::binary);
     char *buffer = new char[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE);
 
-    fp.read(buffer, sizeof(buffer));
-    int count = fp.gcount();
+    // file.read(buffer, CHUNK_SIZE);
+    // int count = file.gcount();
+
+    file.seekg(chunk_no*CHUNK_SIZE, file.beg);
+
+    
+
+    file.read(buffer, CHUNK_SIZE);
+    int count = file.gcount();
+    std::cout<<"S side: File opened.. "<<'\n';
+    std::cout<<"S side: File size ="<<sizeof(buffer)<<'\n';
+    std::cout<<"S side: File size ="<<count<<'\n';
+    std::cout<<"S side: File buffer = "<<buffer<<'\n';
 
     if ((write(socket_fd, buffer, count))< 0) {
         perror("[-]Error in sending file.");
         exit(1);
     }
+    std::cout<<"S side: Write to client completed.. "<<'\n';
 
-    fp.close();
+    file.close();
 
 }
 
@@ -173,6 +313,7 @@ void* handle_connection(int  client_socket){
     // std::cout<<"At handle conneciton\n";
     // while(true){
         // std::cout<<"entered server thread"<<'\n';
+
         char *client_req = new char[WORD_SIZE];
         memset(client_req, 0, WORD_SIZE);
         size_t size;
@@ -190,16 +331,21 @@ void* handle_connection(int  client_socket){
                 input_cmd.push_back(tmp);
         }
         // std::cout<<"checking commands"<<'\n';
+        std::cout<<"S side: got request "<<'\n';
         if(input_cmd[0] == "send_bitmap"){
             // std::cout<<"send_bitmap command matched"<<'\n';
             //send_bitmap file_path
             // std::cout<<input_cmd[0];
+            std::cout<<"S side: send_bitmap "<<'\n';
             std::string bit_map = BitmapToString(input_cmd[1]);
             write(client_socket, bit_map.c_str(), bit_map.size());
             // std::cout<<bit_map;
 
         }
         else if(input_cmd[0] == "send_chunk"){
+            std::cout<<"S side: send_chunk "<<'\n';
+            // write(client_socket, "Sending chunk.....", 26);
+
             WriteChunk(client_socket, stoi(input_cmd[1]), input_cmd[2]);
             // write(client_socket, "sending...", 13);
             // break;
@@ -251,71 +397,21 @@ void* server_function(void *arg){
     return NULL;
 }
 
-struct Client
-{
-    /* PUBLIC MEMBER VARIABLES */
-    int socket;
-    // Variables dealing with the specifics of a connection.
-    int domain;
-    int service;
-    int protocol;
-    int port;
-    u_long interface;
-};
+// void get_response(std::string input_cmd, int client_socket, char* response){
 
+//     memset(response,0,WORD_SIZE);
+//     write(client_socket, &input_cmd[0], input_cmd.size());
+//     //WARNING: we are returning the response from the stack memory of this funciton 
+//     // char response[WORD_SIZE];
+//     // memset(response,0,WORD_SIZE);
+//     size_t size = read(client_socket, response, WORD_SIZE);
 
-void connect_to_server(struct Client *client, char* server_ip){
-    int client_fd;
-    struct sockaddr_in server_address;
-
-    //Tracker's info
-    server_address.sin_family = client->domain;
-    server_address.sin_port = htons(client->port);
-    server_address.sin_addr.s_addr = (int)client->interface;
-
-    inet_pton(client->domain, server_ip, &server_address.sin_addr);
-
-    if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        std::cout<<"Connection failed Server not Live";
-        c_log.Log(ErrorP, "Client connection to tracker failed waiting for 1 sec");
-        usleep(1000000);
-        // exit(1);
-    }
-}
-
-struct Client client_constructor(int domain, int service, int protocol, int port, u_long interface)
-{
-    // Instantiate a client object.
-    struct Client client;
-    client.domain = domain;
-    client.port = port;
-    client.interface = interface;
-
-    // Establish a socket connection.
-    std::stringstream log_string;
-    log_string << "Creating a client side socket with Domain: "<< domain<<"Service:"<<service<<"Protocol:"<<protocol;
-    c_log.Log(DebugP, log_string.str()); 
-
-    client.socket = socket(domain, service, protocol);
-    // Return the constructed socket.
-    return client;
-}
-
-void get_response(std::string input_cmd, int client_socket, char* response){
-
-    memset(response,0,WORD_SIZE);
-    write(client_socket, &input_cmd[0], input_cmd.size());
-    //WARNING: we are returning the response from the stack memory of this funciton 
-    // char response[WORD_SIZE];
-    // memset(response,0,WORD_SIZE);
-    size_t size = read(client_socket, response, WORD_SIZE);
-
-    if(size<=0){
-        std::cout<<"Read operation failed";
-        exit(1);
-    }
-    // return response;
-}
+//     if(size<=0){
+//         std::cout<<"Read operation failed";
+//         exit(1);
+//     }
+//     // return response;
+// }
 
 
 u_long get_file_size(std::string file_path){
@@ -382,21 +478,23 @@ int verify_download_file(std::string src_file, std::string des_path){
 
 
 
-void send_user_message(std::string peer_ip, int peer_port, std::string input_cmd, char* response){
+// void send_user_message(std::string peer_ip, int peer_port, std::string input_cmd, char* response){
     
-    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+//     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
 
-    connect_to_server(&client, &peer_ip[0]);
+//     connect_to_server(&client, &peer_ip[0]);
 
-    // char response[WORD_SIZE];
-    // memset(response,0,WORD_SIZE);
+//     // char response[WORD_SIZE];
+//     // memset(response,0,WORD_SIZE);
+//     std::cout<<"C side: sending command "<<input_cmd<<'\n';
+//     get_response(input_cmd, client.socket, response);
+//     std::cout<<"C side: got response "<<response<<'\n';
 
-    get_response(input_cmd, client.socket, response);
+//     close(client.socket);
+//     // std::cout<<response;
 
-    // std::cout<<response;
 
-
-}
+// }
 
 
 // void WriteChunk(int socket_fd, u_long chunk_no, char* file_loc){
@@ -433,9 +531,9 @@ void download_file(std::vector<std::string> user_details, std::string file_path,
     std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
 
     //First we need to request user for the file details
-    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+    // struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
 
-    connect_to_server(&client, &peer_ip[0]);
+    // connect_to_server(&client, &peer_ip[0]);
 
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
@@ -461,11 +559,18 @@ void download_file(std::vector<std::string> user_details, std::string file_path,
         input_cmd += (std::to_string(i) + " ");
         input_cmd += file_path;
         //sending message to user to initiate write operation
-        send_user_message(peer_ip, peer_port, input_cmd, response);
-        if(bit_map[i+1]!=' ')
-            ReadChunk(client.socket, i, src_loc + base_filename, CHUNK_SIZE);
-        else
-            ReadChunk(client.socket, i, src_loc + base_filename, l_chunk_size);
+        // std::cout<<"C side: sending command "<<input_cmd<<'\n';
+        // send_user_message(peer_ip, peer_port, input_cmd, response);
+        if(bit_map[i+1]!=' '){
+            // std::cout<<"C side: Reading chunk.. "<<input_cmd<<'\n';
+            ReadChunk(peer_ip, peer_port, input_cmd, src_loc + base_filename, CHUNK_SIZE);
+            // std::cout<<"C side: Read complete "<<input_cmd<<'\n';
+            }
+        else{
+            // std::cout<<"C side: Reading L chunk.. "<<input_cmd<<'\n';
+            ReadChunk(peer_ip, peer_port, input_cmd, src_loc + base_filename, l_chunk_size);
+            // std::cout<<"C side: Read L complete "<<input_cmd<<'\n';
+            }
 
         // std::cout<<response;
         i++;

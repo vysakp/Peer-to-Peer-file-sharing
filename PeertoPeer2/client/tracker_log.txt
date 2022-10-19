@@ -14381,3 +14381,224 @@
 16/10/2022 2:10:25 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
 16/10/2022 2:10:25 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
 16/10/2022 2:10:25 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 2:21:0 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 2052Backlog:20
+16/10/2022 2:21:0 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 2:21:0 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 2:21:8 Debug:	Executing create_user operation
+16/10/2022 2:21:14 Debug:	Executing login operation
+16/10/2022 2:21:21 Debug:	Executing create_group operation
+16/10/2022 2:21:36 Debug:	Executing upload_file operation
+16/10/2022 2:21:43 Debug:	Executing upload_file operation
+16/10/2022 2:21:53 Debug:	Executing upload_file operation
+16/10/2022 2:22:1 Debug:	Executing upload_file operation
+16/10/2022 2:22:8 Debug:	Executing list_files operation
+16/10/2022 11:36:25 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 2008Backlog:20
+16/10/2022 11:36:25 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:36:25 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:36:42 Debug:	Executing create_user operation
+16/10/2022 11:36:45 Debug:	Executing login operation
+16/10/2022 11:36:53 Debug:	Executing create_group operation
+16/10/2022 11:36:59 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:36:59 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 2007Backlog:20
+16/10/2022 11:36:59 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:37:6 Debug:	Executing create_user operation
+16/10/2022 11:37:9 Debug:	Executing login operation
+16/10/2022 11:37:22 Debug:	Executing join_group operation
+16/10/2022 11:37:38 Debug:	Wrong command executed
+16/10/2022 11:37:51 Debug:	Executing accept_request operation
+16/10/2022 11:38:6 Debug:	Executing upload_file operation
+16/10/2022 11:38:20 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:38:20 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:38:20 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:55:45 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 2003Backlog:20
+16/10/2022 11:55:45 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:55:45 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:55:50 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 2002Backlog:20
+16/10/2022 11:55:50 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:55:50 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:55:55 Debug:	Executing create_user operation
+16/10/2022 11:55:59 Debug:	Executing login operation
+16/10/2022 11:56:5 Debug:	Executing create_group operation
+16/10/2022 11:56:12 Debug:	Executing create_user operation
+16/10/2022 11:56:15 Debug:	Executing login operation
+16/10/2022 11:56:20 Debug:	Executing join_group operation
+16/10/2022 11:56:31 Debug:	Executing accept_request operation
+16/10/2022 11:56:44 Debug:	Executing upload_file operation
+16/10/2022 11:56:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:56:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 11:56:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:8:16 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:8:16 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3000Backlog:20
+16/10/2022 12:8:16 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:8:21 Debug:	Executing create_user operation
+16/10/2022 12:8:24 Debug:	Executing login operation
+16/10/2022 12:8:30 Debug:	Executing create_group operation
+16/10/2022 12:8:37 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3001Backlog:20
+16/10/2022 12:8:37 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:8:37 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:8:45 Debug:	Executing create_user operation
+16/10/2022 12:8:49 Debug:	Executing login operation
+16/10/2022 12:8:53 Debug:	Executing join_group operation
+16/10/2022 12:9:1 Debug:	Executing accept_request operation
+16/10/2022 12:9:13 Debug:	Executing upload_file operation
+16/10/2022 12:9:32 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:9:32 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:9:32 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:12:43 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:12:43 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3003Backlog:20
+16/10/2022 12:12:43 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:12:52 Debug:	Executing create_user operation
+16/10/2022 12:13:2 Debug:	Executing login operation
+16/10/2022 12:13:45 Debug:	Executing create_group operation
+16/10/2022 12:13:54 Debug:	Executing create_group operation
+16/10/2022 12:14:7 Debug:	Executing upload_file operation
+16/10/2022 12:14:17 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3004Backlog:20
+16/10/2022 12:14:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:14:17 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:14:26 Debug:	Executing create_user operation
+16/10/2022 12:14:29 Debug:	Executing login operation
+16/10/2022 12:14:39 Debug:	Executing join_group operation
+16/10/2022 12:14:49 Debug:	Executing accept_request operation
+16/10/2022 12:15:3 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:15:3 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:15:3 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:35:46 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3004Backlog:20
+16/10/2022 12:35:46 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:35:46 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:35:57 Debug:	Executing create_user operation
+16/10/2022 12:36:0 Debug:	Executing login operation
+16/10/2022 12:36:6 Debug:	Executing create_group operation
+16/10/2022 12:36:15 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:36:15 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3005Backlog:20
+16/10/2022 12:36:15 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:36:22 Debug:	Executing create_user operation
+16/10/2022 12:36:25 Debug:	Executing login operation
+16/10/2022 12:36:35 Debug:	Executing join_group operation
+16/10/2022 12:36:47 Debug:	Executing accept_request operation
+16/10/2022 12:36:54 Debug:	Executing upload_file operation
+16/10/2022 12:36:59 Debug:	Executing upload_file operation
+16/10/2022 12:37:13 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:37:13 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:37:13 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:46:2 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:46:2 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3005Backlog:20
+16/10/2022 12:46:2 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:46:8 Debug:	Executing login operation
+16/10/2022 12:46:29 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3006Backlog:20
+16/10/2022 12:46:29 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:46:29 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:46:36 Debug:	Executing create_user operation
+16/10/2022 12:46:39 Debug:	Executing login operation
+16/10/2022 12:46:48 Debug:	Executing create_group operation
+16/10/2022 12:47:6 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:47:6 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3007Backlog:20
+16/10/2022 12:47:6 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:47:14 Debug:	Executing create_user operation
+16/10/2022 12:47:16 Debug:	Executing login operation
+16/10/2022 12:47:23 Debug:	Executing join_group operation
+16/10/2022 12:47:31 Debug:	Executing accept_request operation
+16/10/2022 12:47:46 Debug:	Executing upload_file operation
+16/10/2022 12:47:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:47:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 12:47:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:2:40 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:2:40 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3010Backlog:20
+16/10/2022 13:2:40 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:2:40 Error:	Client connection to tracker failed waiting for 1 sec
+16/10/2022 13:3:20 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:3:20 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3011Backlog:20
+16/10/2022 13:3:20 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:3:26 Debug:	Executing create_user operation
+16/10/2022 13:3:29 Debug:	Executing login operation
+16/10/2022 13:3:59 Debug:	Executing create_group operation
+16/10/2022 13:4:5 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3012Backlog:20
+16/10/2022 13:4:5 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:4:5 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:4:5 Error:	Client connection to tracker failed waiting for 1 sec
+16/10/2022 13:4:18 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:4:18 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3013Backlog:20
+16/10/2022 13:4:18 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:4:24 Debug:	Executing create_user operation
+16/10/2022 13:4:30 Debug:	Executing login operation
+16/10/2022 13:4:43 Debug:	Executing join_group operation
+16/10/2022 13:4:52 Debug:	Executing accept_request operation
+16/10/2022 13:5:4 Debug:	Executing upload_file operation
+16/10/2022 13:5:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:5:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:5:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:14:54 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:14:54 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3020Backlog:20
+16/10/2022 13:14:54 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:15:1 Debug:	Executing create_user operation
+16/10/2022 13:15:4 Debug:	Executing login operation
+16/10/2022 13:15:9 Debug:	Executing create_group operation
+16/10/2022 13:15:20 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:15:20 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3021Backlog:20
+16/10/2022 13:15:20 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:15:24 Debug:	Executing create_user operation
+16/10/2022 13:15:27 Debug:	Executing login operation
+16/10/2022 13:15:33 Debug:	Executing join_group operation
+16/10/2022 13:15:46 Debug:	Executing accept_request operation
+16/10/2022 13:15:57 Debug:	Executing upload_file operation
+16/10/2022 13:16:4 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:16:4 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:16:4 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:17 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3030Backlog:20
+16/10/2022 13:29:17 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:24 Debug:	Executing create_user operation
+16/10/2022 13:29:27 Debug:	Executing login operation
+16/10/2022 13:29:36 Debug:	Executing create_group operation
+16/10/2022 13:29:44 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 0Backlog:20
+16/10/2022 13:29:44 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:44 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:55 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3033Backlog:20
+16/10/2022 13:29:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:29:55 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:30:1 Debug:	Executing create_user operation
+16/10/2022 13:30:5 Debug:	Executing login operation
+16/10/2022 13:30:8 Debug:	Wrong command executed
+16/10/2022 13:30:12 Debug:	Wrong command executed
+16/10/2022 13:30:20 Debug:	Executing join_group operation
+16/10/2022 13:30:29 Debug:	Executing accept_request operation
+16/10/2022 13:30:39 Debug:	Executing upload_file operation
+16/10/2022 13:30:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+16/10/2022 13:30:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:14:24 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3001Backlog:20
+19/10/2022 17:14:24 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:14:24 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:14:31 Debug:	Executing create_user operation
+19/10/2022 17:15:5 Debug:	Executing create_user operation
+19/10/2022 17:15:7 Debug:	Executing login operation
+19/10/2022 17:15:13 Debug:	Executing create_group operation
+19/10/2022 17:15:22 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3002Backlog:20
+19/10/2022 17:15:22 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:15:22 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:15:27 Debug:	Executing create_user operation
+19/10/2022 17:15:30 Debug:	Executing login operation
+19/10/2022 17:15:37 Debug:	Executing join_group operation
+19/10/2022 17:15:45 Debug:	Executing accept_request operation
+19/10/2022 17:16:0 Debug:	Executing upload_file operation
+19/10/2022 17:16:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:16:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:21:22 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3003Backlog:20
+19/10/2022 17:21:22 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:21:22 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:21:29 Debug:	Executing create_user operation
+19/10/2022 17:21:32 Debug:	Executing login operation
+19/10/2022 17:21:38 Debug:	Executing create_group operation
+19/10/2022 17:21:46 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:21:46 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 3004Backlog:20
+19/10/2022 17:21:46 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:21:51 Debug:	Executing create_user operation
+19/10/2022 17:21:53 Debug:	Executing login operation
+19/10/2022 17:22:0 Debug:	Executing join_group operation
+19/10/2022 17:22:9 Debug:	Executing accept_request operation
+19/10/2022 17:22:27 Debug:	Executing upload_file operation
+19/10/2022 17:22:39 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:22:39 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:24:24 Debug:	Executing upload_file operation
+19/10/2022 17:24:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:24:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:24:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+19/10/2022 17:24:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0

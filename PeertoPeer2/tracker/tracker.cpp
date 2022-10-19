@@ -549,8 +549,11 @@ void* handle_connection(int  client_socket){
                 }
                 else{
                     std::string all_files = "";
-                    for(auto file : AllGroups[input_cmd[1]].files)
-                        all_files += (file.first+ '\n');
+                    for(auto file : AllGroups[input_cmd[1]].files){
+                        std::string base_filename = file.first.substr(file.first.find_last_of("/\\") + 1);
+                        all_files += (base_filename+ '\n');
+
+                        }
 
 
                     write(client_socket, &all_files[0], all_files.size());
@@ -666,7 +669,7 @@ void* quit_function(void* arg){
 
 int main(){
     
-    int port = 4023;
+    int port = 4024;
     struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);
