@@ -36,6 +36,22 @@ struct User {
     }
 };
 
+
+struct File{
+
+    std::string file_path;
+    int no_of_chunks;
+    int size_of_last_chunk;
+    std::vector<bool> bit_map;
+    File(){
+
+    }
+    File(std::string _fpath){
+        file_path = _fpath;
+    }
+
+};
+
 struct Group {
     std::string group_id;
     std::string owner_id;
@@ -51,6 +67,7 @@ struct Group {
 };
 
 
+
 //map of all users 
 std::unordered_map<std::string, User> AllUsers;
 
@@ -58,10 +75,12 @@ std::unordered_map<std::string, User> AllUsers;
 //gourpuuid -> Group
 std::unordered_map<std::string, Group> AllGroups;
 
+//map of all files
+std::unordered_map<std::string, File> AllFiles;
+
 //map of user to group list
 //user->grouplist
 std::unordered_map<std::string, std::unordered_set<std::string>> UserGroupMap;
-
 
 
 typedef unsigned long           u_long;
@@ -253,7 +272,8 @@ int upload_file(std::string cur_usr, std::string file, std::string group){
             }
         else{
             //first entry
-            grp->files[file].insert(cur_usr);
+            std::string base_filename = file.substr(file.find_last_of("/\\") + 1);
+            grp->files[base_filename].insert(cur_usr);
             // std::unordered_set<std::string> usrs;
             // usrs.insert(cur_usr);
             // grp->files[file] = usrs ;
@@ -386,6 +406,8 @@ void* handle_connection(int  client_socket){
                 write(client_socket, "Wrong format\nPlease try: login <user_id> <password>\n", 52);
             else if(AllUsers.find(input_cmd[1])==AllUsers.end())
                 write(client_socket, "User doesn't exist\n", 19);
+            else if(AllUsers[input_cmd[1]].user_pwd!=input_cmd[2])
+                write(client_socket, "Incorrect Password\n", 28);
             else if(AllUsers[input_cmd[1]].is_live)
                 write(client_socket, "User have an active session\n", 28);
             else{
@@ -394,7 +416,7 @@ void* handle_connection(int  client_socket){
                 AllUsers[input_cmd[1]].server_ip = input_cmd[3];
                 AllUsers[input_cmd[1]].port = stoi(input_cmd[4]);
                 write(client_socket, "Login successful\n", 17);
-                std::cout<<cur_user<<" Logged in"<<'\n';
+                std::cout<<"User "<<cur_user<<" Logged in"<<'\n';
                 
             }
             
@@ -433,8 +455,10 @@ void* handle_connection(int  client_socket){
                     write(client_socket, "Request in pending state\n", 32);
                 else if(res==-2)
                      write(client_socket, "Already a member of the group\n", 32);
-                else
+                else{
                     write(client_socket, "Request sent\n", 32);
+                    std::cout<<"Group "<<input_cmd[1]<<" join request send by user "<<cur_user<<'\n';
+                    }
             }
         }
 
@@ -452,12 +476,12 @@ void* handle_connection(int  client_socket){
                 }
                 else if(res == 0)
                     write(client_socket, "Not a member of the group\n", 32);
-                else
+                else{
                     write(client_socket, "You left the group\n", 32);
+                    std::cout<<cur_user<<" left group "<<input_cmd[1]<<'\n';
+                    }
             }
                 
-
-            write(client_socket, "Input is leave_group", 20);
         }
 
 
@@ -512,6 +536,7 @@ void* handle_connection(int  client_socket){
                         break;
                     case 1:
                         write(client_socket, "Request accepted\n", 32);
+                        std::cout<<cur_user<<" accepted  "<<input_cmd[2]<<" to group "<<input_cmd[1]<<'\n';
                         break;
                     default:
                         write(client_socket, "Welcome to Narnia\n", 20);
@@ -550,8 +575,8 @@ void* handle_connection(int  client_socket){
                 else{
                     std::string all_files = "";
                     for(auto file : AllGroups[input_cmd[1]].files){
-                        std::string base_filename = file.first.substr(file.first.find_last_of("/\\") + 1);
-                        all_files += (base_filename+ '\n');
+                        // std::string base_filename = files.first.substr(file.first.find_last_of("/\\") + 1);
+                        all_files += (file.first+ '\n');
 
                         }
 
@@ -580,6 +605,12 @@ void* handle_connection(int  client_socket){
                 else{
                     std::string res_msg = "File uploaded\n";
                     write(client_socket, res_msg.c_str(), res_msg.size());
+                    std::string base_filename = input_cmd[1].substr(input_cmd[1].find_last_of("/\\") + 1);
+
+                    File new_file = File(input_cmd[1]);
+                    AllFiles[base_filename] = new_file;
+                    std::cout<<cur_user<<" uploaded "<<base_filename<<" to group "<<input_cmd[2]<<'\n';
+
                 }
             }   
         }
@@ -591,7 +622,8 @@ void* handle_connection(int  client_socket){
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
                 write(client_socket, "Please log in to accept requests\n", 32);
             else{
-                int res = download_file(cur_user, input_cmd[1], input_cmd[2], input_cmd[3]);
+                std::string base_filename = input_cmd[2].substr(input_cmd[2].find_last_of("/\\") + 1);
+                int res = download_file(cur_user, input_cmd[1], base_filename, input_cmd[3]);
 
                 if(res == -1)
                     write(client_socket, "Group does not exists\n", 32);
@@ -606,7 +638,11 @@ void* handle_connection(int  client_socket){
                     for(auto usr: AllGroups[input_cmd[1]].files[input_cmd[2]])
                         all_users += (usr + " " + AllUsers[usr].server_ip+ " " + std::to_string(AllUsers[usr].port) +'\n');
                     
+
                     write(client_socket, &all_users[0], all_users.size());
+
+                    std::cout<<cur_user<<" downloading "<<base_filename<<" from group "<<input_cmd[1]<<'\n';
+                    
 
                 }
 
@@ -669,7 +705,7 @@ void* quit_function(void* arg){
 
 int main(){
     
-    int port = 4024;
+    int port = 4027;
     struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);
