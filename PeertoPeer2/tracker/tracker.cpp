@@ -284,6 +284,7 @@ int upload_file(std::string cur_usr, std::string file, std::string group){
 
 }
 
+
 int list_files(std::string cur_usr, std::string group){
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
@@ -705,7 +706,7 @@ void* quit_function(void* arg){
 
 int main(){
     
-    int port = 4027;
+    int port = 4028;
     struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);

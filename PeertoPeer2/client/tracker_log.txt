@@ -15075,3 +15075,306 @@
 20/10/2022 1:54:35 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
 20/10/2022 1:54:35 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
 20/10/2022 1:54:35 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:10:8 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6001Backlog:20
+20/10/2022 12:10:8 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:10:8 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:10:16 Debug:	Executing create_user operation
+20/10/2022 12:10:19 Debug:	Executing login operation
+20/10/2022 12:10:31 Debug:	Executing create_group operation
+20/10/2022 12:10:50 Debug:	Executing upload_file operation
+20/10/2022 12:11:7 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:11:7 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6002Backlog:20
+20/10/2022 12:11:7 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:11:14 Debug:	Executing create_user operation
+20/10/2022 12:11:16 Debug:	Executing login operation
+20/10/2022 12:11:22 Debug:	Executing join_group operation
+20/10/2022 12:11:37 Debug:	Executing accept_request operation
+20/10/2022 12:12:0 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:12:0 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:22:35 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6004Backlog:20
+20/10/2022 12:22:35 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:22:35 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:22:39 Debug:	Executing create_user operation
+20/10/2022 12:22:44 Debug:	Executing login operation
+20/10/2022 12:22:49 Debug:	Executing create_group operation
+20/10/2022 12:22:55 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6005Backlog:20
+20/10/2022 12:22:55 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:22:55 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:23:1 Debug:	Executing create_user operation
+20/10/2022 12:23:5 Debug:	Executing login operation
+20/10/2022 12:23:11 Debug:	Executing join_group operation
+20/10/2022 12:23:18 Debug:	Executing accept_request operation
+20/10/2022 12:23:34 Debug:	Wrong command executed
+20/10/2022 12:23:45 Debug:	Executing upload_file operation
+20/10/2022 12:24:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:14 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:49 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6007Backlog:20
+20/10/2022 12:24:49 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:49 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:49 Error:	Client connection to tracker failed waiting for 1 sec
+20/10/2022 12:24:57 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6007Backlog:20
+20/10/2022 12:24:57 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:24:57 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:25:5 Debug:	Executing create_user operation
+20/10/2022 12:25:9 Debug:	Executing login operation
+20/10/2022 12:25:14 Debug:	Executing join_group operation
+20/10/2022 12:25:34 Debug:	Executing accept_request operation
+20/10/2022 12:26:1 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:26:1 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:26:1 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:26:1 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:26:1 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:31:57 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:31:57 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6100Backlog:20
+20/10/2022 12:31:57 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:32:3 Debug:	Executing create_user operation
+20/10/2022 12:32:7 Debug:	Executing login operation
+20/10/2022 12:32:19 Debug:	Executing create_group operation
+20/10/2022 12:32:38 Debug:	Executing upload_file operation
+20/10/2022 12:32:48 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:32:48 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6101Backlog:20
+20/10/2022 12:32:48 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:32:56 Debug:	Executing create_user operation
+20/10/2022 12:33:0 Debug:	Executing login operation
+20/10/2022 12:33:5 Debug:	Executing join_group operation
+20/10/2022 12:33:21 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:33:21 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 6102Backlog:20
+20/10/2022 12:33:21 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:33:28 Debug:	Executing create_user operation
+20/10/2022 12:33:31 Debug:	Executing login operation
+20/10/2022 12:33:40 Debug:	Executing join_group operation
+20/10/2022 12:33:51 Debug:	Executing list_requests operation
+20/10/2022 12:34:43 Debug:	Executing accept_request operation
+20/10/2022 12:34:52 Debug:	Executing accept_request operation
+20/10/2022 12:35:0 Debug:	Executing list_requests operation
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:35:19 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+20/10/2022 12:36:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0

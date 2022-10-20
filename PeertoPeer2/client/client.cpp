@@ -23,7 +23,7 @@ typedef unsigned long           u_long;
 
 
 
-#define TRACKER_PORT 4027
+#define TRACKER_PORT 4028
 #define WORD_SIZE 1024
 #define CHUNK_SIZE 512*1024
 
@@ -208,6 +208,8 @@ void send_user_message(std::string peer_ip, int peer_port, std::string input_cmd
 
 }
 
+
+
 void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::string file_loc, int chunk_size){
 
     //input_cmd: command 
@@ -252,6 +254,12 @@ void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::s
         ssize_t nw =  pwrite(dest, response, size, chunk_no*CHUNK_SIZE + tot_send);
         tot_send+=size;
     }
+
+    //Setting the bitmap value of chunk no to true
+    std::string base_filename = file_loc.substr(file_loc.find_last_of("/\\") + 1);
+    ULFile[base_filename].bit_map[chunk_no] = true;
+
+
     close(dest);
     close(client.socket);
 }
@@ -486,7 +494,7 @@ void download_file(std::vector<std::string> users, std::string file_path, std::s
     //add check if bit map is 1 or not before sending 
     //Continue here...
     // std::cout<<s_res<<' '<<bit_map<<' '<<l_chunk_size<<' '<<bit_map.size()<<'\n';
-
+    //Next add the changes to add the bit map changes while downloading the file
 
     for(int i=0;i<bit_map.size();i++){
         input_cmd = "send_chunk ";
@@ -603,13 +611,40 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
 }
 
 
-void download_file_multi_peer(std::vector<std::string> users, std::string file_name, std::string src_loc){
+void update_file_data(int tracker_socket, std::vector<int> Lchunk_details, std::string file_path, std::string group_name){
+    //function to create a file data at user and tracker side and set the bitmap as false
+    std::string upload_cmd = "upload_file " + file_path + " " + group_name;
+    int no_chunks = Lchunk_details[0];
+    int l_chunk_size = Lchunk_details[1];
+
+    char response[WORD_SIZE];
+    memset(response,0,WORD_SIZE);
+    get_response(upload_cmd, tracker_socket, response);
+    if(strcmp(response, "File uploaded\n") == 0 ){
+        
+        std::cout<<"F upload: uploaded file_path"<<file_path<<'\n';
+        std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
+        File *new_file = new File(base_filename, no_chunks );
+        std::cout<<"F upload: uploaded file_name"<<base_filename<<'\n';
+        std::cout<<"F upload: uploaded no chunks"<<no_chunks<<'\n';
+        std::vector<bool> b_map(no_chunks, false);
+        new_file->size_of_last_chunk = l_chunk_size;
+        new_file->bit_map = b_map;
+        new_file->file_path = file_path;
+
+        ULFile[base_filename] = *new_file;
+    }
+}
+
+void download_file_multi_peer(std::vector<std::string> users, std::string file_name, std::string src_loc, std::string group_name, int tracker_socket){
     std::vector<int> Lchunk_details;
     std::unordered_map<std::string, std::vector<int>> user_chunk_map;
     std::cout<<"M peer: file name = "<<file_name<<'\n';
     // std::string file_path = ULFile[file_name].file_path;
     // std::cout<<"M peer: file path = "<<file_path<<'\n';
     user_chunk_map = piecewiseAlgo(users, file_name, Lchunk_details);
+    update_file_data(tracker_socket, Lchunk_details, src_loc+file_name,group_name );
+
     std::cout<<"M peer: piecewiseAlgo complete"<<'\n';
     std::vector<std::thread> vTreads;
     for(auto user_chunk: user_chunk_map){
@@ -774,6 +809,11 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port){
                         users.push_back(s_resp.substr(prev, pos - prev));
                         prev = pos + 1;
                     }
+
+                  
+                    
+
+
                     // users.push_back(s_resp.substr(prev));
 
                     // for(auto usr: users){
@@ -797,7 +837,7 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port){
 
                     // download_file(users, cmd[2], cmd[3]);
                     std::cout<<"M peer: file name = "<<cmd[2]<<'\n';
-                    download_file_multi_peer(users,  cmd[2], cmd[3]);
+                    download_file_multi_peer(users,  cmd[2], cmd[3], cmd[1], client_socket);
 
                     // std::cout<<"hi";
 
