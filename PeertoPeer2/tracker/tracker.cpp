@@ -639,8 +639,10 @@ void* handle_connection(int  client_socket){
                 }
                 else{
                     std::string all_users = "User list\n";
-                    for(auto usr: AllGroups[input_cmd[1]].files[input_cmd[2]])
-                        all_users += (usr + " " + AllUsers[usr].server_ip+ " " + std::to_string(AllUsers[usr].port) +'\n');
+                    for(auto usr: AllGroups[input_cmd[1]].files[input_cmd[2]]){
+                        if(AllUsers[usr].is_live)
+                            all_users += (usr + " " + AllUsers[usr].server_ip+ " " + std::to_string(AllUsers[usr].port) +'\n');
+                        }
                     
 
                     write(client_socket, &all_users[0], all_users.size());
@@ -719,6 +721,21 @@ void* handle_connection(int  client_socket){
             AllUsers[cur_user].down_status[input_cmd[1]] = input_cmd[2];
             // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
             write(client_socket, "down_status updated..", 20);
+            
+        }
+        else if(input_cmd[0] == "verify_sha"){
+            //verify_sha <file_name> <chunk_no> <chunk_sha> 
+            //cutsom command hence no need to check for errors
+            int chunk_no = stoi(input_cmd[2]);
+            std::string actual_sha = AllFiles[input_cmd[1]].chunk_sha[chunk_no];
+            std::string given_sha = input_cmd[3];
+            std::string res;
+            if(actual_sha == given_sha)
+                res = "TRUE";
+            else
+                res = "FALSE";
+            // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
+            write(client_socket, res.c_str(), res.size());
             
         }
         else {

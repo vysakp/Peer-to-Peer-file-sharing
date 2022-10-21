@@ -682,8 +682,21 @@ std::unordered_map<std::string, std::vector<int>> piecewiseAlgo(std::vector<std:
 
 }
 
+void verify_chunk_sha(std::string down_file_loc, std::string file_name,  int chunk_no, int tracker_socket){
+    char response[WORD_SIZE];
+    memset(response,0,WORD_SIZE);
+    std::string down_chunk_sha = get_chunk_sha(chunk_no, down_file_loc);
 
-void single_user_download(std::string user, std::vector<int> chunks, std::vector<int> Lchunk_details ,std::string file_name, std::string src_loc ){
+    //verify_sha <file_name> <chunk_no> <chunk_sha> 
+    std::string verify_cmd = "verify_sha " + file_name + " ";
+    verify_cmd += (std::to_string(chunk_no) + " " + down_chunk_sha);
+    get_response(verify_cmd, tracker_socket, response);
+
+    // std::cout<<response;
+
+}
+
+void single_user_download(std::string user, std::vector<int> chunks, std::vector<int> Lchunk_details ,std::string file_name, std::string src_loc, int tracker_socket ){
     
 
     // std::cout<<"M peer: at single user"<<'\n';
@@ -709,11 +722,15 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
         // std::cout<<"M peer: reading chunk ="<<chunks[i]<<'\n';
         // std::cout<<"M peer: input cmd ="<<input_cmd<<'\n';
 
+        
         if(chunks[i]==Lchunk_details[0]-1)
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, Lchunk_details[1]);
         else
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, CHUNK_SIZE);
-            
+        
+        verify_chunk_sha(src_loc + file_name, file_name , chunks[i], tracker_socket);
+
+
     }
 }
 
@@ -768,7 +785,7 @@ void download_file_multi_peer(std::vector<std::string> users, std::string file_n
         std::vector<int> chunks = user_chunk.second;
         // std::cout<<"M peer: Current user ="<<cur_usr<<'\n';
         // std::cout<<"M peer: Current user ="<<cur_usr<<'\n';
-        vTreads.push_back(std::thread(single_user_download, cur_usr, chunks, Lchunk_details, file_name, src_loc));
+        vTreads.push_back(std::thread(single_user_download, cur_usr, chunks, Lchunk_details, file_name, src_loc, tracker_socket));
 
         
     }
