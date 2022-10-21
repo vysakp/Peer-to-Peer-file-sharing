@@ -26,6 +26,7 @@ struct User {
     std::string server_ip;
     int port;
     bool is_live;
+    std::unordered_map<std::string,std::string> down_status;
     User(){
 
     }
@@ -34,6 +35,7 @@ struct User {
         user_pwd = _upwd;
         is_live = false;
     }
+
 };
 
 
@@ -42,7 +44,7 @@ struct File{
     std::string file_path;
     int no_of_chunks;
     int size_of_last_chunk;
-    std::vector<bool> bit_map;
+    std::vector<std::string> chunk_sha;
     File(){
 
     }
@@ -612,6 +614,7 @@ void* handle_connection(int  client_socket){
                     AllFiles[base_filename] = new_file;
                     std::cout<<cur_user<<" uploaded "<<base_filename<<" to group "<<input_cmd[2]<<'\n';
 
+
                 }
             }   
         }
@@ -670,12 +673,53 @@ void* handle_connection(int  client_socket){
 
 
         else if(input_cmd[0] == "show_downloads"){
-            write(client_socket, "Input is show_downloads", 20);
+            std::string all_status = "";
+            for(auto status : AllUsers[cur_user].down_status){
+                // std::string base_filename = files.first.substr(file.first.find_last_of("/\\") + 1);
+                
+                all_status += (status.second + " " + status.first + '\n');
+
+                }
+
+
+            write(client_socket, &all_status[0], all_status.size());
         }
 
 
         else if(input_cmd[0] == "stop_share"){
             write(client_socket, "Input is stop_share", 20);
+        }
+        else if(input_cmd[0] == "file_update"){
+            //file_update <file_loc> <no_of_chunks> <last_chunk_size>
+            //custom command hence no need to check for errors
+            int no_of_chunks = stoi(input_cmd[2]);
+            int last_chunk_size = stoi(input_cmd[3]);
+            std::vector<std::string> chunk_sha_map(no_of_chunks);
+
+            AllFiles[input_cmd[1]].no_of_chunks = no_of_chunks;
+            AllFiles[input_cmd[1]].size_of_last_chunk = last_chunk_size;
+            AllFiles[input_cmd[1]].chunk_sha = chunk_sha_map;
+
+
+
+            write(client_socket, "file updated..", 20);
+        }
+        else if(input_cmd[0] == "chunk_sha_update"){
+            //chunk_sha_update <file_name> <chunk_no> <sha1sum>
+            //cutsom command hence no need to check for errors
+            int chunk_no = stoi(input_cmd[2]);
+            AllFiles[input_cmd[1]].chunk_sha[chunk_no] = input_cmd[3];
+            // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
+            write(client_socket, "sha updated..", 20);
+            
+        }
+        else if(input_cmd[0] == "down_status_update"){
+            //down_status_update <file_name> <status> <group_id> 
+            //cutsom command hence no need to check for errors
+            AllUsers[cur_user].down_status[input_cmd[1]] = input_cmd[2];
+            // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
+            write(client_socket, "down_status updated..", 20);
+            
         }
         else {
             write(client_socket, "Invalid command\n", 20);
@@ -706,7 +750,7 @@ void* quit_function(void* arg){
 
 int main(){
     
-    int port = 4028;
+    int port = 4029;
     struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);
