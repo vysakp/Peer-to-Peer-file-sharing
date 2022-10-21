@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include<pthread.h>
 #include <cstring>
-#include "./logger.hpp"
+#include "../logger.hpp"
 #include <sstream>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -15,17 +15,21 @@
 #include <fcntl.h>
 #include <thread>
 #include <chrono>
-
 #include<unordered_map>
 #include<unordered_set>
 #include<vector>
 typedef unsigned long           u_long;
 
-
-
-#define TRACKER_PORT 4029
+#define TRACKER_PORT 4030
 #define WORD_SIZE 10*1024
 #define CHUNK_SIZE 512*1024
+
+
+
+
+BasicLogger c_log;
+const char* BasicLogger::filepath = "client_log.txt";
+
 
 struct File{
 
@@ -35,7 +39,6 @@ struct File{
     int size_of_last_chunk;
     std::vector<bool> bit_map;
     File(){
-
     }
     File(std::string _fname, int _no_chunks){
         file_name = _fname;
@@ -45,8 +48,6 @@ struct File{
 };
 
 std::unordered_map<std::string, File> ULFile;
-
-BasicLogger c_log;
 
 struct Server{
 
@@ -58,6 +59,7 @@ struct Server{
     u_long interface;
     int backlog;
     struct sockaddr_in address;
+
 }; 
 
 struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port,  int backlog){
@@ -78,7 +80,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
     server.address.sin_family = domain;
     server.address.sin_port = htons(port);
 
-    //to take care of little endian or big endian
+    //To take care of little endian or big endian
     server.address.sin_addr.s_addr = htonl(interface);
 
     // creating a socket
@@ -99,6 +101,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
         c_log.Log(ErrorP, "Failed to bind socket...");
         exit(1);
     }
+
     // Start listening on the network.
     if ((listen(server.socket, server.backlog)) < 0)
     {
@@ -111,9 +114,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
 
 struct Client
 {
-    /* PUBLIC MEMBER VARIABLES */
     int socket;
-    // Variables dealing with the specifics of a connection.
     int domain;
     int service;
     int protocol;
@@ -122,10 +123,13 @@ struct Client
 };
 
 void connect_to_server(struct Client *client, char* server_ip){
+    /* funciton to connect the given client to server ip
+    */
+
     int client_fd;
     struct sockaddr_in server_address;
 
-    //Tracker's info
+    //Server's info
     server_address.sin_family = client->domain;
     server_address.sin_port = htons(client->port);
     server_address.sin_addr.s_addr = (int)client->interface;
@@ -133,11 +137,12 @@ void connect_to_server(struct Client *client, char* server_ip){
     inet_pton(client->domain, server_ip, &server_address.sin_addr);
 
     if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        std::cout<<"Connection failed Server not Live";
+        std::cout<<"Connection failed Server not Live"<<'\n';
         c_log.Log(ErrorP, "Client connection to tracker failed waiting for 1 sec");
         usleep(1000000);
         // exit(1);
     }
+
 }
 
 struct Client client_constructor(int domain, int service, int protocol, int port, u_long interface)
@@ -156,10 +161,12 @@ struct Client client_constructor(int domain, int service, int protocol, int port
     client.socket = socket(domain, service, protocol);
     // Return the constructed socket.
     return client;
+
 }
 
-
 std::string BitmapToString(std::string file_name){
+    /* Function that returns the bitmap of the given file in string format
+    */
     std::vector<bool> bitmap = ULFile[file_name].bit_map;
     std::string res = "";
     for(int i=0;i<bitmap.size();i++){
@@ -175,7 +182,9 @@ std::string BitmapToString(std::string file_name){
 }
 
 std::string execute_cmd(std::string command) {
-   //Execute a command on system and return the result
+   /*Funtion that execute a command on system and return the result
+   */
+
    char buffer[128];
    std::string result = "";
 
@@ -187,62 +196,48 @@ std::string execute_cmd(std::string command) {
 
    // read till end of process:
    while (!feof(pipe)) {
-
       // use buffer to read and add to result
       if (fgets(buffer, 128, pipe) != NULL)
          result += buffer;
    }
-
    pclose(pipe);
 
    return result;
+
 }
 
-
-
 void get_response(std::string input_cmd, int client_socket, char* response){
+    /*Funciton that sends the input command ot the client socket and stores the
+     response in respose argument */
 
     memset(response,0,WORD_SIZE);
+
     write(client_socket, &input_cmd[0], input_cmd.size());
-    //WARNING: we are returning the response from the stack memory of this funciton 
-    // char response[WORD_SIZE];
-    // memset(response,0,WORD_SIZE);
     size_t size = read(client_socket, response, WORD_SIZE);
 
     if(size<=0){
         std::cout<<"Read operation failed";
         exit(1);
     }
-    // return response;
 }
 
 void send_user_message(std::string peer_ip, int peer_port, std::string input_cmd, char* response){
+    /*Funciton to send a input_cmd message to given peer and ip nad stores the response in response
+    argument */
     
     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
 
     connect_to_server(&client, &peer_ip[0]);
 
-    // char response[WORD_SIZE];
-    // memset(response,0,WORD_SIZE);
-    // std::cout<<"C side: sending command "<<input_cmd<<'\n';
     get_response(input_cmd, client.socket, response);
-    // std::cout<<"C side: got response "<<response<<'\n';
 
     close(client.socket);
-    // std::cout<<response;
-
 
 }
 
-
-
 void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::string file_loc, int chunk_size){
-
-    //input_cmd: command 
-    
-    // struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
-
-    // connect_to_server(&client, &peer_ip[0]);
+    /*Funciton to read and chunk of data. The fuction will request for the chunk and then receive the response,
+    and write the respose to the given file location*/
 
     std::string tmp;
     std::stringstream ss(input_cmd);
@@ -251,197 +246,152 @@ void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::s
             Vinput.push_back(tmp);
     }
     size_t tot_send = 0;
-    // std::cout<<"M peer: here3"<<'\n';
     int chunk_no = stoi(Vinput[1]);
 
-    // u_long chunk_size = CHUNK_SIZE;
-    // std::cout<<"C side: Writing to file "<<file_loc<<'\n';
+
     int dest = open(&file_loc[0], O_RDWR | O_CREAT, 0666);
     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
+
     connect_to_server(&client, &peer_ip[0]);
 
 
-    // std::cout<<"C side: Requesting.... "<<'\n';
+    //Requesting client server to write the chunk
     write(client.socket, &input_cmd[0], input_cmd.size());
 
+    //Adding a loop to recieve the entire buffer
     while(tot_send<=chunk_size){
+
         char response[chunk_size];
         memset(response,0,chunk_size);
-        // std::cout<<"C side: reading buffer "<<'\n';
-        // std::cout<<"C side: Reading.... "<<'\n';
         size_t size = read(client.socket, response, CHUNK_SIZE);
 
         if(size<=0){
-            // std::cout<<"Read operation failed";
+            // Read operation complete or failed
             break;
         }
-
-
         ssize_t nw =  pwrite(dest, response, size, chunk_no*CHUNK_SIZE + tot_send);
         tot_send+=size;
+
     }
 
     //Setting the bitmap value of chunk no to true
     std::string base_filename = file_loc.substr(file_loc.find_last_of("/\\") + 1);
     ULFile[base_filename].bit_map[chunk_no] = true;
 
-
     close(dest);
     close(client.socket);
 }
 
 void WriteChunk(int socket_fd, u_long chunk_no, std::string file_name){
+    /*Funciton to read the chunk data from the given file location and write the data onto the 
+    given socket file descriptor*/
     
-    // std::cout<<"S side: Write chunk "<<'\n';
-    // std::ifstream fp(file_loc.c_str(), std::ios::in|std::ios::binary);
     std::ifstream file;
     std::string file_loc = ULFile[file_name].file_path;
     file.open(file_loc, std::ios::binary);
     char *buffer = new char[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE);
 
-    // file.read(buffer, CHUNK_SIZE);
-    // int count = file.gcount();
-
     file.seekg(chunk_no*CHUNK_SIZE, file.beg);
-
-    
 
     file.read(buffer, CHUNK_SIZE);
     int count = file.gcount();
-    // std::cout<<"S side: File opened.. "<<'\n';
-    // std::cout<<"S side: File size ="<<sizeof(buffer)<<'\n';
-    // std::cout<<"S side: File size ="<<count<<'\n';
-    // std::cout<<"S side: File buffer = "<<buffer<<'\n';
 
     if ((write(socket_fd, buffer, count))< 0) {
         perror("[-]Error in sending file.");
         exit(1);
     }
-    // std::cout<<"S side: Write to client completed.. "<<'\n';
-
     file.close();
 
 }
 
 void* handle_connection(int  client_socket){
-    // std::cout<<"At handle conneciton\n";
-    // while(true){
-        // std::cout<<"entered server thread"<<'\n';
+    /*Funciton to handle requests to  server side*/
 
-        char *client_req = new char[WORD_SIZE];
-        memset(client_req, 0, WORD_SIZE);
-        size_t size;
-        if(read(client_socket, client_req, WORD_SIZE)<=0){
-            close(client_socket);
-            // break;
-        }
-        // std::cout<<"Read complete..\n";
-        // std::cout<<client_req<<'\n';
+    char *client_req = new char[WORD_SIZE];
+    memset(client_req, 0, WORD_SIZE);
+    size_t size;
+    if(read(client_socket, client_req, WORD_SIZE)<=0){
+        close(client_socket);
+    }
 
-        std::string tmp, input = client_req;
-        std::stringstream ss(input);
-        std::vector<std::string> input_cmd;
-        while(ss>>tmp){
-                input_cmd.push_back(tmp);
-        }
-        // std::cout<<"checking commands"<<'\n';
-        // std::cout<<"S side: got request "<<'\n';
-        if(input_cmd[0] == "send_bitmap"){
-            // std::cout<<"send_bitmap command matched"<<'\n';
-            //send_bitmap file_path
-            // std::cout<<input_cmd[0];
-            // std::cout<<"S side: send_bitmap "<<'\n';
-            std::string bit_map = BitmapToString(input_cmd[1]);
-            write(client_socket, bit_map.c_str(), bit_map.size());
-            // std::cout<<bit_map;
+    std::string tmp, input = client_req;
+    std::stringstream ss(input);
+    std::vector<std::string> input_cmd;
+    while(ss>>tmp){
+            input_cmd.push_back(tmp);
+    }
 
-        }
-        else if(input_cmd[0] == "send_chunk"){
-            // std::cout<<"S side: send_chunk "<<'\n';
-
-            //Sending the respective chunk
-
-            WriteChunk(client_socket, stoi(input_cmd[1]), input_cmd[2]);
-        }
-    //closing the connection after executing the command at server side
+    if(input_cmd[0] == "send_bitmap"){
+        std::string bit_map = BitmapToString(input_cmd[1]);
+        write(client_socket, bit_map.c_str(), bit_map.size());
+    }
+    else if(input_cmd[0] == "send_chunk"){
+        WriteChunk(client_socket, stoi(input_cmd[1]), input_cmd[2]);
+    }
+    
     close(client_socket);
     return NULL;
 
 }
 
 void* server_function(void *arg){
+     /*Server funciton to handle download requests from client side,
+     multi threaded to handle multiple requests*/
     
     int *port = (int*)arg;
     struct Server server = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, *port, 20);
     struct sockaddr *address = (struct sockaddr*)&server.address;
     socklen_t address_length = (socklen_t)sizeof(server.address);
+
     //Vector of threads for each incoming client connection
     std::vector<std::thread> vTreads;
     int client;
+
     while(true){
         int client_socket;
 
-        // std::cout<<"Entered Accepted ";
         if((client_socket = accept(server.socket, address, &address_length))<0){
             std::cout<<"Accept connection failed..."<<'\n';
         }
-        // std::cout<<"Accepted connection";
 
         vTreads.push_back(std::thread(handle_connection, client_socket));
-        // char *buffer = new char[WORD_SIZE];
-        // memset(buffer, 0, WORD_SIZE);
-
-        // size_t size;
-        // while (true) {
-        //     size = read(client, buffer, WORD_SIZE);
-        //     if(size<0){
-        //         std::cout<<"Error";
-        //     }
-        //     else
-        //         std::cout<<buffer;
-        // }
         
     }
+
     for(auto i=vTreads.begin(); i!=vTreads.end(); i++){
         if(i->joinable()) i->join();
     }
     close(client);
     return NULL;
+
 }
 
-
-
 u_long get_file_size(std::string file_path){
+    /* Helper funciton which return the file size of the the given file
+    */
     std::ifstream in_file(file_path.c_str(), std::ios::binary);
     in_file.seekg(0, std::ios::end);
     u_long file_size = in_file.tellg();
-    // std::cout<<"Size of the file is"<<" "<< file_size<<" "<<"bytes";
     return file_size;
 }
+
 int verify_upload_file(std::string file_path){
+    /* Helper funciton verify the paths before uploading the file metadata
+    */
+
     if (FILE *file = fopen(file_path.c_str(), "r")) {
         fclose(file);
-
         std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
 
         if(ULFile.find(base_filename)!=ULFile.end()){
             //file already added 
             return 0;
         }
-        // u_long f_size = get_file_size(file_path);
-        // int num_chunks = f_size/(CHUNK_SIZE) + (f_size % (CHUNK_SIZE) != 0);
-        // File *new_file = new File(file_path,num_chunks );
 
-        // int l_chunk_size = f_size - (f_size/(CHUNK_SIZE))*CHUNK_SIZE;
-        // std::vector<int> b_map(num_chunks, 1);
-        // new_file->size_of_last_chunk = l_chunk_size;
-        // new_file->bit_map = b_map;
-
-        // ULFile[file_path] = *new_file;
         return 1;
-
     } 
+
     else {
         //file doesn't exist
         return -1;
@@ -449,55 +399,41 @@ int verify_upload_file(std::string file_path){
 }
 
 int verify_download_file(std::string des_path){
-    // if (FILE *file = fopen(src_file.c_str(), "r")) {
-    //     fclose(file);
+    /* Helper funciton verify the paths before downloading the file
+    */
 
     struct stat info;
     if( stat( des_path.c_str(), &info ) != 0 ){
         //destination path doesn't exist
         return -1;
-        // printf( "cannot access %s\n", des_path );
         }
     else if( info.st_mode & S_IFDIR ){  
         //given path exists
         return 1;
-        
         }
-    else
-        {   
-            //Given dest_loc is not a directory
-            // printf( "%s is no directory\n", des_path );
-            return 0;
+    else{   
+        //Given dest_loc is not a directory
+        return 0;
         }
-        
-    // }
-    // else{
-    //     //file doesn't exist
-    //     return -2;
-    // }
+
     }
 
 std::string get_chunk_sha(u_long chunk_no, std::string file_loc){
-    
-    
-    // std::ifstream fp(file_loc.c_str(), std::ios::in|std::ios::binary);
+    /* Funciton to get the sha1 value of the given file chunk
+    */
+
     std::ifstream file;
-    // std::string file_loc = ULFile[file_name].file_path;
     file.open(file_loc, std::ios::binary);
     char *buffer = new char[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE);
-
-    // file.read(buffer, CHUNK_SIZE);
-    // int count = file.gcount();
-
     file.seekg(chunk_no*CHUNK_SIZE, file.beg);
-
     file.read(buffer, CHUNK_SIZE);
-
     file.close();
     
+    //creating a random number for temp file creation
+    //calculating the sha value on this temp file as openssl lib
+    //is not working for mac
     srand(time(0));
-
     std::string temp_chunk_file_name = "temp" + std::to_string(rand())+ ".txt";
     std::ofstream out(temp_chunk_file_name);
     out<<buffer;
@@ -508,12 +444,14 @@ std::string get_chunk_sha(u_long chunk_no, std::string file_loc){
     remove(temp_chunk_file_name.c_str());
 
     chunk_sha = chunk_sha.substr(0, chunk_sha.find(' '));
-    // std::cout<<"sha sum for "<<chunk_no<<" = "<<chunk_sha<<'\n';
     return chunk_sha;
 
 }
 
 void upload_file(std::string file_path, int tracker_socket){
+    /* Funciton to upload a file and update the necessary data at tracker
+    */
+
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
     u_long f_size = get_file_size(file_path);
@@ -538,27 +476,21 @@ void upload_file(std::string file_path, int tracker_socket){
     memset(response,0,WORD_SIZE);
     get_response(file_update_cmd, tracker_socket, response);
 
-
+    //Sending the sha value to tracker side
     //chunk_sha_update <file_name> <chunk_no> <sha1sum>
     for(int i=0;i<num_chunks; i++){
-        
-    std::string chunk_sha = get_chunk_sha(i, file_path);
-    memset(response,0,WORD_SIZE);
-
-
-    std::string chunk_sha_update_cmd = "chunk_sha_update " + base_filename + " ";
-    chunk_sha_update_cmd += (std::to_string(i)+ " " + chunk_sha);
-    get_response(chunk_sha_update_cmd, tracker_socket, response);
-    
+        std::string chunk_sha = get_chunk_sha(i, file_path);
+        memset(response,0,WORD_SIZE);
+        std::string chunk_sha_update_cmd = "chunk_sha_update " + base_filename + " ";
+        chunk_sha_update_cmd += (std::to_string(i)+ " " + chunk_sha);
+        get_response(chunk_sha_update_cmd, tracker_socket, response);
     }
+
 }
 
 void download_file(std::vector<std::string> users, std::string file_path, std::string src_loc){
-    //usr_details[0] = user name 
-    //usr_details[1] = user ip
-    //usr_details[2] = user port
-
-    //IT is expected the src-loc to be ending with a /
+    /* Temp Funciton to download a file from a single user, used for debugging
+    */
 
     std::string tmp, cur_usr = users[1];
     std::stringstream ss(cur_usr);
@@ -571,11 +503,6 @@ void download_file(std::vector<std::string> users, std::string file_path, std::s
     int peer_port = stoi(user_details[2]);
     std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
 
-    //First we need to request user for the file details
-    // struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
-
-    // connect_to_server(&client, &peer_ip[0]);
-
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
 
@@ -586,64 +513,50 @@ void download_file(std::vector<std::string> users, std::string file_path, std::s
     
 
     std::string s_res = response;
-    //s_res struct <bit-map> ' ' <size of last chunk>
 
-    // send_user_message(peer_ip, peer_port, input_cmd, response);
-    // std::cout<<response;
+    //s_res struct <bit-map>  <size of last chunk>
     std::string bit_map = s_res.substr(0, s_res.find(' '));
     int l_chunk_size = stoi(s_res.substr(s_res.find(" ") + 1)); 
     int i=0;
-    //add check if bit map is 1 or not before sending 
-    //Continue here...
-    // std::cout<<s_res<<' '<<bit_map<<' '<<l_chunk_size<<' '<<bit_map.size()<<'\n';
-    //Next add the changes to add the bit map changes while downloading the file
 
     for(int i=0;i<bit_map.size();i++){
         input_cmd = "send_chunk ";
         input_cmd += (std::to_string(i) + " ");
         input_cmd += file_path;
+
         //sending message to user to initiate write operation
-        // std::cout<<"C side: sending command "<<input_cmd<<'\n';
-        if(i<bit_map.size()-1){
-            // std::cout<<"C side: Reading chunk.. "<<input_cmd<<'\n';
+        if(i<bit_map.size()-1)
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + base_filename, CHUNK_SIZE);
-            // std::cout<<"C side: Read complete "<<input_cmd<<'\n';
-            }
-        else{
-            // std::cout<<"C side: Reading L chunk.. "<<input_cmd<<'\n';
+        else
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + base_filename, l_chunk_size);
-            // std::cout<<"C side: Read L complete "<<input_cmd<<'\n';
-            }
     }
 
 }
 
 std::unordered_map<std::string, std::vector<int>> piecewiseAlgo(std::vector<std::string>users, std::string file_name, std::vector<int> &Lchunk_details ){
-    //users[0] ="User List", users[1] = user 1 , users[2] = user 2 ...
+    /* PieceWiseAlgorithm to decide on the downloading order from different users. 
+    Updates the Lchunk_details argument with the lastchunk details and returns the 
+    user chunk-list map
+    */
 
     std::string bit_map;
     int l_chunk_size;
     std::unordered_map<std::string, std::string> user_bitmap_map;
     std::unordered_map<std::string, std::vector<int>> user_chunk_map;
     std::unordered_map<int,std::string> user_map;
-    // std::cout<<"M peer: here1 "<<'\n';
 
-    // std::cout<<"M peer: user size =  "<<users.size()<<'\n';
-
+    //For loop to get the bit map details of the users
     for(int i=1;i<users.size();i++){
         std::string tmp, cur_usr = users[i];
         user_map[i-1] = cur_usr;
         std::stringstream ss(cur_usr);
         std::vector<std::string> user_details;
         while(ss>>tmp){
-                user_details.push_back(tmp);
+            user_details.push_back(tmp);
         }
-
 
         std::string peer_ip = user_details[1];
         int peer_port = stoi(user_details[2]);
-
-
 
         char response[WORD_SIZE];
         memset(response,0,WORD_SIZE);
@@ -651,31 +564,25 @@ std::unordered_map<std::string, std::vector<int>> piecewiseAlgo(std::vector<std:
         input_cmd+= file_name;
         send_user_message(peer_ip, peer_port, input_cmd, response);
         std::string s_res = response;
-        // std::cout<<"M peer: response ="<<response<<'\n';
 
         std::cout<<s_res.substr(s_res.find(" ") + 1);
         bit_map = s_res.substr(0, s_res.find(' '));
         l_chunk_size = stoi(s_res.substr(s_res.find(" ") + 1)); 
         user_bitmap_map[cur_usr] = bit_map;
-        // std::cout<<"M peer: here2 "<<'\n';
     }
-    // std::cout<<"M peer: here3 "<<'\n';
+
+
     Lchunk_details.push_back(bit_map.size());
     Lchunk_details.push_back(l_chunk_size);
-    // std::cout<<"M peer: here4 "<<'\n';
     int no_of_users = users.size()-1;
-    // std::cout<<"M peer: no of users "<<no_of_users<<'\n';
 
+    //For loop the assign the chunk to different users
     for(int i=0;i<bit_map.size();i++){
         int to_user = i%no_of_users;
-        // std::cout<<"M peer: to user = "<<to_user<<'\n';
-        if(user_chunk_map.find(user_map[to_user])==user_chunk_map.end()){
-
+        if(user_chunk_map.find(user_map[to_user])==user_chunk_map.end())
             user_chunk_map[user_map[to_user]] = { i };
-        }
-        else{
+        else
             user_chunk_map[user_map[to_user]].push_back(i);
-        }
     }
 
     return user_chunk_map;
@@ -683,6 +590,9 @@ std::unordered_map<std::string, std::vector<int>> piecewiseAlgo(std::vector<std:
 }
 
 void verify_chunk_sha(std::string down_file_loc, std::string file_name,  int chunk_no, int tracker_socket){
+    /* Funtion to verify the download file chunk sha and the sha at tracker side
+    */
+
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
     std::string down_chunk_sha = get_chunk_sha(chunk_no, down_file_loc);
@@ -692,14 +602,13 @@ void verify_chunk_sha(std::string down_file_loc, std::string file_name,  int chu
     verify_cmd += (std::to_string(chunk_no) + " " + down_chunk_sha);
     get_response(verify_cmd, tracker_socket, response);
 
-    // std::cout<<response;
-
 }
 
-void single_user_download(std::string user, std::vector<int> chunks, std::vector<int> Lchunk_details ,std::string file_name, std::string src_loc, int tracker_socket ){
+void single_user_download(std::string user, std::vector<int> chunks, std::vector<int> Lchunk_details ,std::string file_name, std::string src_loc, int tracker_socket){
+    /* Function which downloads the gives vector of chunks from the given user and write the
+    buffer onto the given file
+    */
     
-
-    // std::cout<<"M peer: at single user"<<'\n';
     std::string input_cmd, tmp;
     std::stringstream ss(user);
     std::vector<std::string> user_details;
@@ -710,18 +619,13 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
     std::string peer_ip = user_details[1];
     int peer_port = stoi(user_details[2]);
 
-    // std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
-
+    //Reading the chunks from from the server and writing it in the file
     for(int i=0;i<chunks.size();i++){
         //sleeping fow .1s to  reduce the download speed
         usleep(100000);
         input_cmd = "send_chunk ";
         input_cmd += (std::to_string(chunks[i]) + " ");
         input_cmd += file_name;
-
-        // std::cout<<"M peer: reading chunk ="<<chunks[i]<<'\n';
-        // std::cout<<"M peer: input cmd ="<<input_cmd<<'\n';
-
         
         if(chunks[i]==Lchunk_details[0]-1)
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, Lchunk_details[1]);
@@ -729,14 +633,14 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, CHUNK_SIZE);
         
         verify_chunk_sha(src_loc + file_name, file_name , chunks[i], tracker_socket);
-
-
     }
+
 }
 
-
 void update_file_data(int tracker_socket, std::vector<int> Lchunk_details, std::string file_path, std::string group_name){
-    //function to create a file data at user and tracker side and set the bitmap as false
+    /* Function to create a file data at user and tracker side and set the bitmap as false
+    */
+
     std::string upload_cmd = "upload_file " + file_path + " " + group_name;
     int no_chunks = Lchunk_details[0];
     int l_chunk_size = Lchunk_details[1];
@@ -744,27 +648,28 @@ void update_file_data(int tracker_socket, std::vector<int> Lchunk_details, std::
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
     get_response(upload_cmd, tracker_socket, response);
+
     if(strcmp(response, "File uploaded\n") == 0 ){
-        
-        // std::cout<<"F upload: uploaded file_path"<<file_path<<'\n';
         std::string base_filename = file_path.substr(file_path.find_last_of("/\\") + 1);
         File *new_file = new File(base_filename, no_chunks );
-        // std::cout<<"F upload: uploaded file_name"<<base_filename<<'\n';
-        // std::cout<<"F upload: uploaded no chunks"<<no_chunks<<'\n';
         std::vector<bool> b_map(no_chunks, false);
         new_file->size_of_last_chunk = l_chunk_size;
         new_file->bit_map = b_map;
         new_file->file_path = file_path;
-
         ULFile[base_filename] = *new_file;
     }
+
 }
 
 void download_file_multi_peer(std::vector<std::string> users, std::string file_name, std::string src_loc, std::string group_name, int tracker_socket){
-    // setting the download status at 
+    /* Function to download the given file from multiple peers and write it onto
+       the given file location
+    */
     
     char response[WORD_SIZE];
     memset(response,0,WORD_SIZE);
+
+    //Setting the download status = D
     //down_status_update <file_name> <group_id> <status>
     std::string status_cmd = "down_status_update " + file_name + " [D][" + group_name + "]";
     get_response(status_cmd, tracker_socket, response);
@@ -772,300 +677,238 @@ void download_file_multi_peer(std::vector<std::string> users, std::string file_n
 
     std::vector<int> Lchunk_details;
     std::unordered_map<std::string, std::vector<int>> user_chunk_map;
-    // std::cout<<"M peer: file name = "<<file_name<<'\n';
-    // std::string file_path = ULFile[file_name].file_path;
-    // std::cout<<"M peer: file path = "<<file_path<<'\n';
     user_chunk_map = piecewiseAlgo(users, file_name, Lchunk_details);
     update_file_data(tracker_socket, Lchunk_details, src_loc+file_name,group_name );
 
-    // std::cout<<"M peer: piecewiseAlgo complete"<<'\n';
+
     std::vector<std::thread> vTreads;
     for(auto user_chunk: user_chunk_map){
         std::string cur_usr = user_chunk.first;
         std::vector<int> chunks = user_chunk.second;
-        // std::cout<<"M peer: Current user ="<<cur_usr<<'\n';
-        // std::cout<<"M peer: Current user ="<<cur_usr<<'\n';
         vTreads.push_back(std::thread(single_user_download, cur_usr, chunks, Lchunk_details, file_name, src_loc, tracker_socket));
-
-        
     }
+
     for(auto i=vTreads.begin(); i!=vTreads.end(); i++){
         if(i->joinable()) i->join();
     }
 
+    //Setting the download status = C
+    //down_status_update <file_name> <group_id> <status>
     status_cmd = "down_status_update " + file_name + " [C][" + group_name + "]";
     get_response(status_cmd, tracker_socket, response);
 
 }
 
-
-
-
 void handleCMD(std::string input_cmd, int client_socket, int server_port, std::vector<std::thread> &DUThreads){
+    /* Function to handle the user commands and request the same with tracker and peer server
+    */
 
-        std::string tmp, server_ip = "127.0.0.1";
-        // write(client_socket, &input_cmd[0], input_cmd.size());
+    std::string tmp, server_ip = "127.0.0.1";
 
-        std::stringstream ss(input_cmd);
-        std::vector<std::string> cmd;
-        while(ss>>tmp){
-                cmd.push_back(tmp);
-        }
+    std::stringstream ss(input_cmd);
+    std::vector<std::string> cmd;
+    while(ss>>tmp){
+            cmd.push_back(tmp);
+    }
 
-        // char* response;
-        char response[WORD_SIZE];
-        memset(response,0,WORD_SIZE);
-        // strcpy(response, get_response(input_cmd, client_socket));
-        // memset(response,0,WORD_SIZE);
-        // size_t size = read(client_socket, response, WORD_SIZE);
+    char response[WORD_SIZE];
+    memset(response,0,WORD_SIZE);
+    
+    if(cmd[0] == "create_user"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing create_user operation"); 
+    }
 
-        // if(size<=0){
-        //     std::cout<<"Read operation failed";
-        //     exit(1);
-        // }
-        // std::cout<<response;
-        
+    else if(cmd[0] == "login"){
+        input_cmd += (" " + server_ip);
+        input_cmd += (" " + std::to_string(server_port));
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing login operation"); 
+    }
 
-        if(cmd[0] == "create_user"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing create_user operation"); 
-        }
-        else if(cmd[0] == "login"){
-            input_cmd += (" " + server_ip);
-            input_cmd += (" " + std::to_string(server_port));
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing login operation"); 
-        }
-        else if(cmd[0] == "create_group"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing create_group operation"); 
-        }
-        else if(cmd[0] == "join_group"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing join_group operation"); 
-        }
-        else if(cmd[0] == "leave_group"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing leave_group operation"); 
-        }
-        else if(cmd[0] == "list_requests"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing list_requests operation"); 
-        }
-        else if(cmd[0] == "accept_request"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing accept_request operation"); 
-        }
-        else if(cmd[0] == "list_groups"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing list_groups operation"); 
-        }
-        else if(cmd[0] == "list_files"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing list_files operation"); 
-        }
+    else if(cmd[0] == "create_group"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing create_group operation"); 
+    }
 
+    else if(cmd[0] == "join_group"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing join_group operation"); 
+    }
 
-        else if(cmd[0] == "upload_file"){
-            int res = verify_upload_file(cmd[1]);
-            if(cmd.size()!=3)
-               std::cout<<"Wrong format\nPlease try: upload_file <file_path> <group_id>\n";
-            else if(res==-1){
-                std::cout<<"Invalid File path\n";
+    else if(cmd[0] == "leave_group"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing leave_group operation"); 
+    }
+
+    else if(cmd[0] == "list_requests"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing list_requests operation"); 
+    }
+
+    else if(cmd[0] == "accept_request"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing accept_request operation"); 
+    }
+
+    else if(cmd[0] == "list_groups"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing list_groups operation"); 
+    }
+
+    else if(cmd[0] == "list_files"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing list_files operation"); 
+    }
+
+    else if(cmd[0] == "upload_file"){
+        int res = verify_upload_file(cmd[1]);
+        if(cmd.size()!=3)
+            std::cout<<"Wrong format\nPlease try: upload_file <file_path> <group_id>\n";
+        else if(res==-1){
+            std::cout<<"Invalid File path\n";
+        }
+        else if(res==0){
+                std::cout<<"File already uploaded\n";
+        }
+        else{
+            get_response(input_cmd, client_socket, response);
+
+            if(strcmp(response, "File uploaded\n") == 0 ){
+                //Adding the function to download upload threads
+                DUThreads.push_back(std::thread(upload_file, cmd[1], client_socket));
             }
-            else if(res==0){
-                 std::cout<<"File already uploaded\n";
-            }
-            else{
-                get_response(input_cmd, client_socket, response);
-                // std::string s_res = response;
-                if(strcmp(response, "File uploaded\n") == 0 ){
-                    // upload_file(cmd[1], client_socket);
+            std::cout<<response;
+        }
+        c_log.Log(DebugP, "Executing upload_file operation"); 
 
-                    DUThreads.push_back(std::thread(upload_file, cmd[1], client_socket));
-                    // u_long f_size = get_file_size(cmd[1]);
-                    // int num_chunks = f_size/(CHUNK_SIZE) + (f_size % (CHUNK_SIZE) != 0);
-
-                    // std::string base_filename = cmd[1].substr(cmd[1].find_last_of("/\\") + 1);
-                    // File *new_file = new File(base_filename, num_chunks );
-
-                    // int l_chunk_size = f_size - (f_size/(CHUNK_SIZE))*CHUNK_SIZE;
-                    // std::vector<bool> b_map(num_chunks, true);
-                    // new_file->size_of_last_chunk = l_chunk_size;
-                    // new_file->bit_map = b_map;
-                    // new_file->file_path = cmd[1];
-
-                    // ULFile[base_filename] = *new_file;
-
-                    // // Sending the file details update command to tracker
-                    // //file_update <file_name> <file_size> <last_chunk_size>
-                    // std::string file_update_cmd = "file_update " + base_filename + " ";
-                    // file_update_cmd += (std::to_string(num_chunks)+ " " + std::to_string(l_chunk_size));
-
-                    // memset(response,0,WORD_SIZE);
-                    // get_response(file_update_cmd, client_socket, response);
+    }
 
 
-                    // //chunk_sha_update <file_name> <chunk_no> <sha1sum>
-                    // for(int i=0;i<num_chunks; i++){
-                        
-                    // std::string chunk_sha = get_chunk_sha(i, cmd[1]);
-                    // memset(response,0,WORD_SIZE);
+    else if(cmd[0] == "download_file"){
+        int resp = verify_download_file(cmd[3]);
+        if(cmd.size()!=4)
+            std::cout<<"Wrong format\nPlease try: download_file <group_id> <file_name> <destination_path>n";
+        else if(resp == -1){
+            std::cout<<"Destination path does not exists\n";
+        }
+        else if(resp == 0){
+            std::cout<<"Destination path is not a directory\n";
+        }
+        else{
+            get_response(input_cmd, client_socket, response);
 
+            std::string resp_prefix = std::string(response).substr(0,9);
+            // cheking the prefix
+            if(resp_prefix == "User list"){
+                //gives the list of users 
+                std::string s_resp = std::string(response);
+                std::vector<std::string> users;
+                std::string::size_type pos = 0;
+                std::string::size_type prev = 0;
 
-                    // std::string chunk_sha_update_cmd = "chunk_sha_update " + base_filename + " ";
-                    // chunk_sha_update_cmd += (std::to_string(i)+ " " + chunk_sha);
-                    // get_response(chunk_sha_update_cmd, client_socket, response);
-                    
-                    // }
-
+                while ((pos = s_resp.find('\n', prev)) != std::string::npos) {
+                    users.push_back(s_resp.substr(prev, pos - prev));
+                    prev = pos + 1;
                 }
+
+                DUThreads.push_back(std::thread(download_file_multi_peer,  users,  cmd[2], cmd[3], cmd[1], client_socket));
+            }
+
+            else
                 std::cout<<response;
-            }
-            // get_response(input_cmd, client_socket, response);
-            // std::cout<<response;
-            // if(strcmp(response, "File uploaded\n") == 0 ){
-            //     std::cout<<"Inside the if condition\n";
-            //     int res = upload_file(cmd[1]);
-
-
-            // }
-            // else
-            //     std::cout<<response;
-            c_log.Log(DebugP, "Executing upload_file operation"); 
         }
 
+    }
 
-        else if(cmd[0] == "download_file"){
-            int resp = verify_download_file(cmd[3]);
-            if(cmd.size()!=4)
-               std::cout<<"Wrong format\nPlease try: download_file <group_id> <file_name> <destination_path>n";
-            else if(resp == -1){
-                std::cout<<"Destination path does not exists\n";
-            }
-            else if(resp == 0){
-                std::cout<<"Destination path is not a directory\n";
-            }
-            else{
-                //TODO: need to add the string cmp for group having the file or not
-                //and avoid the -2 check condition
-                get_response(input_cmd, client_socket, response);
+    else if(cmd[0] == "logout"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing logout operation"); 
+    }
 
-                // std::cout<<std::string(response);
-                std::string resp_prefix = std::string(response).substr(0,9);
-                // std::cout<<resp_prefix;
-                if(resp_prefix == "User list"){
-                    //gives the list of users 
-                    std::string s_resp = std::string(response);
-                    std::vector<std::string> users;
-                    std::string::size_type pos = 0;
-                    std::string::size_type prev = 0;
-                    while ((pos = s_resp.find('\n', prev)) != std::string::npos) {
-                        users.push_back(s_resp.substr(prev, pos - prev));
-                        prev = pos + 1;
-                    }
+    else if(cmd[0] == "show_downloads"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing show_downloads operation"); 
+    }
 
-                  
-                    
-
-
-                    // users.push_back(s_resp.substr(prev));
-
-                    // for(auto usr: users){
-                    //     std::cout<<"M peer: usrs:"<<usr<<'\n';
-                    // }
-
-                    // for(auto usr:users)
-                    //     std::cout<<usr<<" ";
-                    
-                    //user 1 = usr[1]
-                    // std::string tmp, cur_usr = users[1];
-                    // std::stringstream ss(cur_usr);
-                    // std::vector<std::string> usr_details;
-                    // while(ss>>tmp){
-                    //         usr_details.push_back(tmp);
-                    // }
-
-                    //usr_details[0] = user name 
-                    //usr_details[1] = user ip
-                    //usr_details[2] = user port
-
-                    // download_file(users, cmd[2], cmd[3]);
-                    // std::cout<<"M peer: file name = "<<cmd[2]<<'\n';
-                    // download_file_multi_peer(users,  cmd[2], cmd[3], cmd[1], client_socket);
-                    DUThreads.push_back(std::thread(download_file_multi_peer,  users,  cmd[2], cmd[3], cmd[1], client_socket));
-                    // std::cout<<"hi";
-
-                }
-                else
-                    std::cout<<response;
-            // get_response(input_cmd, client_socket, response);
-            // std::cout<<response;
-            // c_log.Log(DebugP, "Executing download_file operation"); 
-        }
-        }
-
-
-        else if(cmd[0] == "logout"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing logout operation"); 
-        }
-        else if(cmd[0] == "show_downloads"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing show_downloads operation"); 
-        }
-        else if(cmd[0] == "stop_share"){
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Executing stop_share operation"); 
-        }
-        // else if(cmd[0] == "reply_back"){
-        //     //for debugging reply_back usr-ip usr-port message
-        //     std::cout<<"reply_back executing\n";
-        //     send_user_message(cmd[1], std::stoi(cmd[2]),cmd[3]);
-        //     std::cout<<"reply_back executed";
-        //     // get_response(input_cmd, client_socket, response);
-        //     // std::cout<<response;
-        //     // c_log.Log(DebugP, "Executing stop_share operation"); 
-        // }
-        
-        else {
-            get_response(input_cmd, client_socket, response);
-            std::cout<<response;
-            c_log.Log(DebugP, "Wrong command executed"); 
-        }
-        // bzero(response,WORD_SIZE);
+    else if(cmd[0] == "stop_share"){
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Executing stop_share operation"); 
+    }
+    
+    else {
+        get_response(input_cmd, client_socket, response);
+        std::cout<<response;
+        c_log.Log(DebugP, "Wrong command executed"); 
+    }
 
 }
 
+std::vector<std::string> getTrackerInfo(char* path){
+    std::fstream trackerInfoFile;
+    trackerInfoFile.open(path, std::ios::in);
 
-int main(){
-    int port;
-    std::cout<<"Enter port number: ";
-    std::cin>>port;
+    std::vector<std::string> res;
+    if(trackerInfoFile.is_open()){
+        std::string t;
+        while(getline(trackerInfoFile, t)){
+            res.push_back(t);
+        }
+        trackerInfoFile.close();
+    }
+    else{
+        std::cout << "Tracker Info file not found.\n";
+        exit(-1);
+    }
+    return res;
+}
 
-    // int port = 2023;
+int main(int argc, char* argv[]){
+    if(argc != 3){
+        std::cout << "Give arguments as <peer IP:port> and <tracker info file name>\n";
+        return -1;
+    }
 
+    std::string peerInfo = argv[1];
+    std::string tmp; 
+    std::stringstream ss(peerInfo);
+    std::vector<std::string> peerdetails;
+
+    while(getline(ss, tmp, ':'))
+        peerdetails.push_back(tmp);
+
+    std::string peer_ip = peerdetails[0];
+    int peer_port = stoi(peerdetails[1]);
+    // string trackerInfoFilename = argv[2];
+
+    // int port;
+    // std::cout<<"Enter port number: ";
+    // std::cin>>port;
+
+    std::vector<std::string> trackerInfo = getTrackerInfo(argv[2]);
+    std::string tracker1_ip = trackerInfo[0];
+    int tracker1_port = stoi(trackerInfo[1]);
+    std::string tracker2_ip = trackerInfo[2];
+    int tracker2_port = stoi(trackerInfo[3]);
+
+
+    //Running server on thread and calling server function
     pthread_t server_thread;
+    pthread_create(&server_thread, NULL, server_function, &peer_port);
 
-    pthread_create(&server_thread, NULL, server_function, &port);
-
-    // char *cmd = new char[WORD_SIZE];
-    // memset(cmd, 0, WORD_SIZE);
-    size_t size;
-
-    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, TRACKER_PORT, INADDR_ANY);
+    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, tracker1_port, INADDR_ANY);
     char tracker_ip[] = "127.0.0.1";
 
     connect_to_server(&client, tracker_ip);
@@ -1073,44 +916,23 @@ int main(){
 
     //ignoring any inputs 
     std::cin.ignore();
+
     std::vector<std::thread> DUThreads;
+
     while(true){
-        
         std::string tmp, input_cmd;
         std::cout<<"Enter command: ";
-        // std::cin>>input_cmd;
         std::getline(std::cin,input_cmd);
         if(input_cmd.size()==0)
             continue;
-        // std::cin>>cmd;
-        // char* buffer = "Hi";
-        // input_cmd = cmd;  
 
-        // write(client.socket, &input_cmd[0], input_cmd.size());
-
-
-        // char *response = new char[WORD_SIZE];
-        // size = read(client.socket, response, WORD_SIZE);
-
-        // if(size<=0){
-        //     std::cout<<"Read operation failed";
-        //     exit(1);
-        // }
-        // std::cout<<response;
-
-        // std::stringstream ss(input_cmd);
-        // std::vector<std::string> cmd;
-        // while(ss>>tmp){
-        //         cmd.push_back(tmp);
-        // }
-        handleCMD(input_cmd, client.socket, port, DUThreads);
-        // vTreads.push_back(std::thread(handleCMD, input_cmd, client.socket, port));
-
-        
+        handleCMD(input_cmd, client.socket, peer_port, DUThreads);
     }
+
     for(auto i=DUThreads.begin(); i!=DUThreads.end(); i++){
         if(i->joinable()) i->join();
     }
+
     pthread_join(server_thread, NULL);
     close(client.socket);
 

@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include<pthread.h>
 #include <cstring>
-#include "./logger.hpp"
+#include "../logger.hpp"
 #include <sstream>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -18,6 +18,10 @@
 #include <thread>
 #include <unordered_map>
 #include <unordered_set>
+typedef unsigned long           u_long;
+
+BasicLogger TrLog;
+const char* BasicLogger::filepath = "tracker_log.txt";
 
 //Datastuctures 
 struct User {
@@ -28,30 +32,24 @@ struct User {
     bool is_live;
     std::unordered_map<std::string,std::string> down_status;
     User(){
-
     }
     User(std::string _uid, std::string _upwd){
         user_id = _uid;
         user_pwd = _upwd;
         is_live = false;
     }
-
 };
 
-
 struct File{
-
     std::string file_path;
     int no_of_chunks;
     int size_of_last_chunk;
     std::vector<std::string> chunk_sha;
     File(){
-
     }
     File(std::string _fpath){
         file_path = _fpath;
     }
-
 };
 
 struct Group {
@@ -68,29 +66,7 @@ struct Group {
     }
 };
 
-
-
-//map of all users 
-std::unordered_map<std::string, User> AllUsers;
-
-//map of all groups
-//gourpuuid -> Group
-std::unordered_map<std::string, Group> AllGroups;
-
-//map of all files
-std::unordered_map<std::string, File> AllFiles;
-
-//map of user to group list
-//user->grouplist
-std::unordered_map<std::string, std::unordered_set<std::string>> UserGroupMap;
-
-
-typedef unsigned long           u_long;
-
-BasicLogger TrLog;
-
 struct Server{
-
     int domain;
     int service;
     int protocol;
@@ -101,7 +77,27 @@ struct Server{
     struct sockaddr_in address;
 }; 
 
+
+//map of all users 
+//username->User
+std::unordered_map<std::string, User> AllUsers;
+
+//map of all groups
+//gourpuuid->Group
+std::unordered_map<std::string, Group> AllGroups;
+
+//map of all files
+//Filename->File
+std::unordered_map<std::string, File> AllFiles;
+
+//map of user to group list
+//user->grouplist
+std::unordered_map<std::string, std::unordered_set<std::string>> UserGroupMap;
+
+
 struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port,  int backlog){
+    /* Fuction to create a server structure and return it with the given arguments
+    */
 
     std::stringstream log_string;
     log_string << "Creating a server with Domain: "<< domain<<"Service:"<<service<<"Protocol:"<<protocol;
@@ -115,14 +111,13 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
     server.interface = interface;
     server.port = port;
     server.backlog = backlog;
-
     server.address.sin_family = domain;
     server.address.sin_port = htons(port);
 
-    //to take care of little endian or big endian
+    // To take care of little endian or big endian
     server.address.sin_addr.s_addr = htonl(interface);
 
-    // creating a socket
+    // Creating a socket
     log_string.str("");
     log_string << "Creating a server side socket with Domain: "<< domain<<"Service:"<<service<<"Protocol:"<<protocol;
     TrLog.Log(DebugP, log_string.str()); 
@@ -146,11 +141,31 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
         TrLog.Log(ErrorP, "Failed to start listening...");
         exit(1);
     }
+
     return server;
     
 }
 
+void* quit_function(void* arg){
+    /* Helper fuction to quit the tracker on quit command
+    */
+    while(true){
+        std::string input;
+        std::getline(std::cin, input);
+        if(input=="quit"){
+            std::cout<<"closing the Tracker";
+            int *tracker_fd = (int*) arg;
+            close(*tracker_fd);
+            exit(1);
+        }
+
+    }
+}
+
 bool create_new_user(std::string user_id, std::string user_pwd){
+    /* Helper fuction to do checks before creating a new user
+    */
+
     if(AllUsers.find(user_id)==AllUsers.end()){
         User* new_user = new User(user_id, user_pwd);
         AllUsers[user_id] = *new_user;
@@ -163,9 +178,10 @@ bool create_new_user(std::string user_id, std::string user_pwd){
 }
 
 int add_group(std::string user_id, std::string group_id){
-    std::string group_uuid = user_id + "_" + group_id;
+    /* Helper fuction to do checks before creating a new group
+    */
 
-     if(AllGroups.find(group_id)==AllGroups.end()){
+    if(AllGroups.find(group_id)==AllGroups.end()){
         //given group doesn't exist
         Group *new_group = new Group(group_id, user_id);
         //adding owner to memeber list
@@ -175,19 +191,23 @@ int add_group(std::string user_id, std::string group_id){
         AllGroups[group_id] = *new_group;
         return 0;
      }
+
      else{
         //group exists
         return -1;
      }
-    
+
 }
 
 int join_group(std::string cur_usr, std::string group){
+    /* Helper fuction to do checks before user joining a group
+    */
 
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
     }
+
     else{
         Group *join_grp = &AllGroups[group];
         if(join_grp->requests.find(cur_usr)!=join_grp->requests.end()){
@@ -200,16 +220,19 @@ int join_group(std::string cur_usr, std::string group){
             join_grp->requests.insert(cur_usr);
             return 1;
         }
-
     }
+
 }
 
-
 int list_group_req(std::string cur_usr, std::string group){
+    /* Helper fuction to do checks before listing groups
+    */
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
     }
+
     else{
         Group *grp = &AllGroups[group];
         if(grp->owner_id!=cur_usr)
@@ -221,6 +244,9 @@ int list_group_req(std::string cur_usr, std::string group){
 }
 
 int accept_group_req(std::string cur_usr, std::string peer_usr, std::string group){
+    /* Helper fuction to do checks accepting a user to group
+    */
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
@@ -239,10 +265,14 @@ int accept_group_req(std::string cur_usr, std::string peer_usr, std::string grou
                 return -2;
         }
     }
+
 }
 
 int leave_group(std::string cur_usr, std::string group){
+    /* Helper fuction to do checks when a user leaves the group
+    */
     //TODO: check what to do if the owner is leaving the group
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
@@ -254,14 +284,16 @@ int leave_group(std::string cur_usr, std::string group){
             grp->members.erase(grp->members.find(cur_usr));
             return 1;
         }
-        else{
+        else
             return 0;
-        }
     }
 
 }
 
 int upload_file(std::string cur_usr, std::string file, std::string group){
+    /* Helper fuction to do checks when a user uploads a file to group
+    */
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
@@ -273,21 +305,18 @@ int upload_file(std::string cur_usr, std::string file, std::string group){
             return 0;
             }
         else{
-            //first entry
             std::string base_filename = file.substr(file.find_last_of("/\\") + 1);
             grp->files[base_filename].insert(cur_usr);
-            // std::unordered_set<std::string> usrs;
-            // usrs.insert(cur_usr);
-            // grp->files[file] = usrs ;
             return 1;
         }
-
     }
 
 }
 
-
 int list_files(std::string cur_usr, std::string group){
+    /* Helper fuction to do checks when a user lists files in a group
+    */
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
@@ -301,11 +330,14 @@ int list_files(std::string cur_usr, std::string group){
         else{
             return 1;
         }
-
     }
+
 }
 
 int download_file(std::string cur_usr, std::string group, std::string src_file, std::string des_loc){
+    /* Helper fuction to do checks when user download file from a group
+    */
+
     if(AllGroups.find(group)==AllGroups.end()){
         //group does not exists
         return -1;
@@ -326,71 +358,34 @@ int download_file(std::string cur_usr, std::string group, std::string src_file, 
             return 1;
         }
     }
+
 }
-    // if(UserGroupMap.find(user_id) != UserGroupMap.end()){
-    //     //user already have some groups 
-    //     if(AllGroups.find(group_id)==AllGroups.end()){
-    //         //given group doesn't exist
-    //         Group *new_group = new Group(group_id, user_id);
-
-    //         //adding owner to memeber list
-    //         new_group->members.insert(user_id);
-
-    //         UserGroupMap[user_id].insert(group_id);
-    //         AllGroups[group_uuid] = *new_group;
-    //         return 0;
-    //     }
-    //     else{
-    //         //given group exists;
-    //         return -1;
-    //     }
-    // }
-    // else{
-        //user creating group for the first time
-
-    //     Group *new_group = new Group(group_id, user_id);
-    //     new_group->members.insert(user_id);
-
-    //     std::unordered_set<std::string> group_set;
-    //     group_set.insert(group_id);
-
-    //     UserGroupMap[user_id].insert(group_id);
-    //     AllGroups[group_uuid] = *new_group;
-    //     return 1;
-    // }
-
 
 void* handle_connection(int  client_socket){
+    /* Fuction which handles the different client request and 
+       update the datastructures accordigly
+    */
 
-    // int* client_socket = (int *)arg;
     std::string cur_user = "";
     const char* c_user;
+
     while(true)
     {   
-        
         char client_req[1024] = {0};
-        // size_t size;
-
-        // size = read(client_socket, client_req, 1024);
-
-        
-
         if(read(client_socket, client_req, 1024)<=0){
             close(client_socket);
             break;
         }
         
-
         std::string tmp, input = client_req;
         std::stringstream ss(input);
         std::vector<std::string> input_cmd;
         while(ss>>tmp){
                 input_cmd.push_back(tmp);
         }
-        
-        // std::cout<<input_cmd[0]<<'\n';
 
         if(input_cmd[0] == "create_user"){
+
             if(input_cmd.size()!=3)
                 write(client_socket, "Wrong format\nPlease try: create_user <user_id> <password>\n", 58);
 
@@ -401,9 +396,11 @@ void* handle_connection(int  client_socket){
                 }
             else
                 write(client_socket, "User already exists\n", 20);
+
         }
 
         else if(input_cmd[0] == "login"){
+
             //Adding two args <server ip> and <server port> at user side
             if(input_cmd.size()!=5)
                 write(client_socket, "Wrong format\nPlease try: login <user_id> <password>\n", 52);
@@ -419,15 +416,13 @@ void* handle_connection(int  client_socket){
                 AllUsers[input_cmd[1]].server_ip = input_cmd[3];
                 AllUsers[input_cmd[1]].port = stoi(input_cmd[4]);
                 write(client_socket, "Login successful\n", 17);
-                std::cout<<"User "<<cur_user<<" Logged in"<<'\n';
-                
+                std::cout<<"User "<<cur_user<<" Logged in"<<'\n';   
             }
             
         }
 
-
         else if(input_cmd[0] == "create_group"){
-            
+
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: create_group <group_id>\n", 49);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -446,6 +441,7 @@ void* handle_connection(int  client_socket){
 
 
         else if(input_cmd[0] == "join_group"){
+
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: join_group <group_id>\n", 47);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -463,10 +459,11 @@ void* handle_connection(int  client_socket){
                     std::cout<<"Group "<<input_cmd[1]<<" join request send by user "<<cur_user<<'\n';
                     }
             }
+
         }
 
-
         else if(input_cmd[0] == "leave_group"){
+
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: leave_group <group_id>\n", 48);
             //Continue here ...
@@ -487,8 +484,8 @@ void* handle_connection(int  client_socket){
                 
         }
 
-
         else if(input_cmd[0] == "list_requests"){
+
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: list_requests <group_id>\n", 49);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -506,20 +503,16 @@ void* handle_connection(int  client_socket){
                 else {
 
                     std::string all_reqs = "";
-
-                    for(auto req : AllGroups[input_cmd[1]].requests){
+                    for(auto req : AllGroups[input_cmd[1]].requests)
                         all_reqs += (req+ '\n');
-
                     write(client_socket, &all_reqs[0], all_reqs.size());
                 }
-
-                }
-
             }
+
         }
 
-
         else if(input_cmd[0] == "accept_request"){
+
             if(input_cmd.size()!=3)
                 write(client_socket, "Wrong format\nPlease try: accept_request <group_id> <user_id>\n", 61);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -545,9 +538,11 @@ void* handle_connection(int  client_socket){
                         write(client_socket, "Welcome to Narnia\n", 20);
                 }
             }
+
         }
 
         else if(input_cmd[0] == "list_groups"){
+
             if(input_cmd.size()!=1)
                 write(client_socket, "Wrong format\nPlease try: list_groups\n", 37);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -560,9 +555,11 @@ void* handle_connection(int  client_socket){
                 write(client_socket, &all_groups[0], all_groups.size());
 
             }
+
         }
 
         else if(input_cmd[0] == "list_files"){
+
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: list_files <group_id>\n", 48);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -577,22 +574,18 @@ void* handle_connection(int  client_socket){
                 }
                 else{
                     std::string all_files = "";
-                    for(auto file : AllGroups[input_cmd[1]].files){
-                        // std::string base_filename = files.first.substr(file.first.find_last_of("/\\") + 1);
+                    for(auto file : AllGroups[input_cmd[1]].files)
                         all_files += (file.first+ '\n');
-
-                        }
-
 
                     write(client_socket, &all_files[0], all_files.size());
                 
+                }
             }
-            // write(client_socket, "Input is list_files", 20);
-        }
-        }
 
+        }
 
         else if(input_cmd[0] == "upload_file"){
+
             if(input_cmd.size()!=3)
                 write(client_socket, "Wrong format\nPlease try: upload_file <file_path> <group_id>\n", 61);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -613,14 +606,13 @@ void* handle_connection(int  client_socket){
                     File new_file = File(input_cmd[1]);
                     AllFiles[base_filename] = new_file;
                     std::cout<<cur_user<<" uploaded "<<base_filename<<" to group "<<input_cmd[2]<<'\n';
-
-
                 }
-            }   
+            }
+
         }
 
-
         else if(input_cmd[0] == "download_file"){
+
             if(input_cmd.size()!=4)
                 write(client_socket, "Wrong format\nPlease try: download_file <group_id> <file_name> <destination_path>\n", 81);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live)
@@ -628,7 +620,6 @@ void* handle_connection(int  client_socket){
             else{
                 std::string base_filename = input_cmd[2].substr(input_cmd[2].find_last_of("/\\") + 1);
                 int res = download_file(cur_user, input_cmd[1], base_filename, input_cmd[3]);
-
                 if(res == -1)
                     write(client_socket, "Group does not exists\n", 32);
                 else if(res==0){
@@ -644,21 +635,16 @@ void* handle_connection(int  client_socket){
                             all_users += (usr + " " + AllUsers[usr].server_ip+ " " + std::to_string(AllUsers[usr].port) +'\n');
                         }
                     
-
                     write(client_socket, &all_users[0], all_users.size());
 
                     std::cout<<cur_user<<" downloading "<<base_filename<<" from group "<<input_cmd[1]<<'\n';
-                    
-
                 }
-
             }
 
-            // write(client_socket, "Input is download_file", 20);
         }
 
-
         else if(input_cmd[0] == "logout"){
+
             if(input_cmd.size()!=1)
                 write(client_socket, "Wrong format\nPlease try: logout\n", 32);
             else if(cur_user.size()==0||!AllUsers[cur_user].is_live){
@@ -671,29 +657,30 @@ void* handle_connection(int  client_socket){
                 AllUsers[cur_user].is_live = false;
                 write(client_socket, "User logged out\n", 20);
             }
+
         }
 
 
         else if(input_cmd[0] == "show_downloads"){
+
             std::string all_status = "";
-            for(auto status : AllUsers[cur_user].down_status){
-                // std::string base_filename = files.first.substr(file.first.find_last_of("/\\") + 1);
-                
+            for(auto status : AllUsers[cur_user].down_status)
                 all_status += (status.second + " " + status.first + '\n');
 
-                }
-
-
             write(client_socket, &all_status[0], all_status.size());
-        }
 
+        }
 
         else if(input_cmd[0] == "stop_share"){
+
             write(client_socket, "Input is stop_share", 20);
+
         }
+
         else if(input_cmd[0] == "file_update"){
-            //file_update <file_loc> <no_of_chunks> <last_chunk_size>
+
             //custom command hence no need to check for errors
+            //file_update <file_loc> <no_of_chunks> <last_chunk_size>
             int no_of_chunks = stoi(input_cmd[2]);
             int last_chunk_size = stoi(input_cmd[3]);
             std::vector<std::string> chunk_sha_map(no_of_chunks);
@@ -702,30 +689,35 @@ void* handle_connection(int  client_socket){
             AllFiles[input_cmd[1]].size_of_last_chunk = last_chunk_size;
             AllFiles[input_cmd[1]].chunk_sha = chunk_sha_map;
 
-
-
             write(client_socket, "file updated..", 20);
+
         }
+
         else if(input_cmd[0] == "chunk_sha_update"){
-            //chunk_sha_update <file_name> <chunk_no> <sha1sum>
+
             //cutsom command hence no need to check for errors
+            //chunk_sha_update <file_name> <chunk_no> <sha1sum>
             int chunk_no = stoi(input_cmd[2]);
             AllFiles[input_cmd[1]].chunk_sha[chunk_no] = input_cmd[3];
             // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
             write(client_socket, "sha updated..", 20);
             
         }
+
         else if(input_cmd[0] == "down_status_update"){
-            //down_status_update <file_name> <status> <group_id> 
+
             //cutsom command hence no need to check for errors
+            //down_status_update <file_name> <status> <group_id>
             AllUsers[cur_user].down_status[input_cmd[1]] = input_cmd[2];
             // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
             write(client_socket, "down_status updated..", 20);
             
         }
+
         else if(input_cmd[0] == "verify_sha"){
-            //verify_sha <file_name> <chunk_no> <chunk_sha> 
+
             //cutsom command hence no need to check for errors
+            //verify_sha <file_name> <chunk_no> <chunk_sha>
             int chunk_no = stoi(input_cmd[2]);
             std::string actual_sha = AllFiles[input_cmd[1]].chunk_sha[chunk_no];
             std::string given_sha = input_cmd[3];
@@ -734,82 +726,85 @@ void* handle_connection(int  client_socket){
                 res = "TRUE";
             else
                 res = "FALSE";
-            // std::cout<<"chunk "<<chunk_no<<" = "<<input_cmd[3]<<'\n';
             write(client_socket, res.c_str(), res.size());
             
         }
+
         else {
+
             write(client_socket, "Invalid command\n", 20);
+
         }
 
 
     }
-    close(client_socket);
 
+    close(client_socket);
     return NULL;
 
-
 }
 
-void* quit_function(void* arg){
-    while(true){
-        std::string input;
-        std::getline(std::cin, input);
-        if(input=="quit"){
-            std::cout<<"closing the Tracker";
-            int *tracker_fd = (int*) arg;
-            close(*tracker_fd);
-            exit(1);
+std::vector<std::string> getTrackerInfo(char* path){
+    std::fstream trackerInfoFile;
+    trackerInfoFile.open(path, std::ios::in);
+
+    std::vector<std::string> res;
+    if(trackerInfoFile.is_open()){
+        std::string t;
+        while(getline(trackerInfoFile, t)){
+            res.push_back(t);
         }
-
+        trackerInfoFile.close();
     }
+    else{
+        std::cout << "Tracker Info file not found.\n";
+        exit(-1);
+    }
+    return res;
 }
 
-int main(){
-    
-    int port = 4029;
-    struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, port, 20);
+int main(int argc, char *argv[]){
+
+    if(argc != 3){
+        std::cout << "Give arguments as <tracker info file name> and <tracker_number>\n";
+        return -1;
+    }
+    int curTrackerPort;
+    std::string curTrackerIP;
+    std::vector<std::string> trackeraddress = getTrackerInfo(argv[1]);
+    if(std::string(argv[2]) == "1"){
+        curTrackerIP = trackeraddress[0];
+        curTrackerPort = stoi(trackeraddress[1]);
+    }
+    else{
+        curTrackerIP = trackeraddress[2];;
+        curTrackerPort = stoi(trackeraddress[3]);
+    }
+
+    // int port = 4030;
+    struct Server Tracker = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, curTrackerPort, 20);
     struct sockaddr *address = (struct sockaddr*)&Tracker.address;
     socklen_t address_length = (socklen_t)sizeof(Tracker.address);
+
     pthread_t exitTread;
-
-
     pthread_create(&exitTread, NULL, quit_function, &Tracker.socket);
-    // std::thread exitThread(quit_function, Tracker.socket);
-
-
 
     //Vector of threads for each incoming client connection
     std::vector<std::thread> vTreads;
     
-
     while(true){
         int client_socket;
-        
-        
         if((client_socket = accept(Tracker.socket, address, &address_length))<0){
             std::cout<<"Accept connection failed..."<<'\n';
-            // perror("Tracker failed to accept");
         }
 
-        // printf("C Programming");
-        // std::cout<<"hi"<<'\n';
-        
-
-        //creating a new thread for the client 
-        // pthread_t new_client;
-        // pthread_create(&new_client, NULL, handle_connection, (void *)client_socket);
         vTreads.push_back(std::thread(handle_connection, client_socket));
         
-        // handle_connection(client_socket);
     }
+
      for(auto i=vTreads.begin(); i!=vTreads.end(); i++){
         if(i->joinable()) i->join();
     }
-
-    // for(pthread_t client: vTreads){
-    //     pthread_join(client, NULL);
-    // }
 
     return 0;
 }

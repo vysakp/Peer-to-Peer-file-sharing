@@ -57,6 +57,6 @@ class BasicLogger {
 };
 
 LogPriority BasicLogger::verbosity = TraceP;
-const char* BasicLogger::filepath = "tracker_log.txt";
+// const char* BasicLogger::filepath = "tracker_log.txt";
 
 #endif //logger_h
