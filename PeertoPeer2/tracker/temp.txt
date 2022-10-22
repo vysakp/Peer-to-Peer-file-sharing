@@ -1,0 +1,33 @@
+create_user g g
+login g g
+create_group grp2
+
+upload_file /Users/vyshakp/Documents/empdetails.csv grp
+upload_file /Users/vyshakp/Documents/2022201064.pdf g1
+upload_file /Users/vyshakp/Documents/rbr.mp4 g1
+upload_file /Users/vyshakp/Documents/movie.mp4 g2
+upload_file /Users/vyshakp/Documents/test.jpeg grp
+upload_file /Users/vyshakp/Documents/wallpaper/wallpaper_mikael_gustafsson.jpg grp
+upload_file /Users/vyshakp/Documents/wallpaper/iiit_resume_vyshak.pdf grp
+
+list_files grp
+
+download_file g1 /Users/vyshakp/Documents/2022201064.pdf /Users/vyshakp/Documents/test/
+download_file g1 2022201064.pdf /Users/vyshakp/Documents/test/
+download_file g1 rbr.mp4 /Users/vyshakp/Documents/test/
+download_file g1 movie.mp4 /Users/vyshakp/Documents/test/
+download_file g1 rbr.mp4 /Users/vyshakp/Documents/test/test2/
+download_file g1 movie.mp4 /Users/vyshakp/Documents/test/test2/
+
+
+//bugs to resolve 
+list_requests having duplicates 
+
+tracker should return the list of users that are alive 
+
+cd "/Users/vyshakp/Documents/AOS/Peer-to-Peer-file-sharing/PeertoPeer2/client/" && g++ --std=c++17 client.cpp -o client && "/Users/vyshakp/Documents/AOS/Peer-to-Peer-file-sharing/PeertoPeer2/client/"client 127.0.0.1:4556 tracker_info.txt
+                                                                               │Enter command:
+
+create_user u1 u1
+login u1 u1
+create_group g1

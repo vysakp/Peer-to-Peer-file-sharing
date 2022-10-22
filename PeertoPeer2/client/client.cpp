@@ -87,6 +87,7 @@ bool switched = false;
 std::unordered_map<std::string, File> ULFile;
 
 bool isLoggedIn = false;
+std::string curUser = "";
 
 
 struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port,  int backlog){
@@ -269,8 +270,8 @@ void get_response(std::string input_cmd, int client_socket, char* response){
     write(client_socket, &input_cmd[0], input_cmd.size());
     size_t size = read(client_socket, response, WORD_SIZE);
     
-    if(!switched)
-        send_to_tracker2(input_cmd);
+    // if(!switched)
+    //     send_to_tracker2(input_cmd);
 
     if(size<=0){
         std::cout<<"Read operation failed switching tracker";
@@ -306,16 +307,12 @@ void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::s
     size_t tot_send = 0;
     int chunk_no = stoi(Vinput[1]);
 
-
     int dest = open(&file_loc[0], O_RDWR | O_CREAT, 0666);
     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, peer_port, INADDR_ANY);
-
     connect_to_server(&client, &peer_ip[0]);
-
 
     //Requesting client server to write the chunk
     write(client.socket, &input_cmd[0], input_cmd.size());
-
     //Adding a loop to recieve the entire buffer
     while(tot_send<=chunk_size){
 
@@ -331,11 +328,9 @@ void ReadChunk(std::string peer_ip, int peer_port, std::string input_cmd, std::s
         tot_send+=size;
 
     }
-
     //Setting the bitmap value of chunk no to true
     std::string base_filename = file_loc.substr(file_loc.find_last_of("/\\") + 1);
     ULFile[base_filename].bit_map[chunk_no] = true;
-
     close(dest);
     close(client.socket);
 }
@@ -666,14 +661,12 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
     /* Function which downloads the gives vector of chunks from the given user and write the
     buffer onto the given file
     */
-    
     std::string input_cmd, tmp;
     std::stringstream ss(user);
     std::vector<std::string> user_details;
     while(ss>>tmp){
             user_details.push_back(tmp);
     }
-
     std::string peer_ip = user_details[1];
     int peer_port = stoi(user_details[2]);
 
@@ -681,10 +674,10 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
     for(int i=0;i<chunks.size();i++){
         //sleeping fow .1s to  reduce the download speed
         // usleep(100000);
+        
         input_cmd = "send_chunk ";
         input_cmd += (std::to_string(chunks[i]) + " ");
         input_cmd += file_name;
-        
         if(chunks[i]==Lchunk_details[0]-1)
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, Lchunk_details[1]);
         else
@@ -699,7 +692,7 @@ void update_file_data(int tracker_socket, std::vector<int> Lchunk_details, std::
     /* Function to create a file data at user and tracker side and set the bitmap as false
     */
 
-    std::string upload_cmd = "upload_file " + file_path + " " + group_name;
+    std::string upload_cmd = "upload_file " + file_path + " " + group_name + " " + curUser;
     int no_chunks = Lchunk_details[0];
     int l_chunk_size = Lchunk_details[1];
 
@@ -736,8 +729,7 @@ void download_file_multi_peer(std::vector<std::string> users, std::string file_n
     std::vector<int> Lchunk_details;
     std::unordered_map<std::string, std::vector<int>> user_chunk_map;
     user_chunk_map = piecewiseAlgo(users, file_name, Lchunk_details);
-    update_file_data(tracker_socket, Lchunk_details, src_loc+file_name,group_name );
-
+    update_file_data(tracker_socket, Lchunk_details, src_loc+file_name,group_name);
 
     std::vector<std::thread> vTreads;
     for(auto user_chunk: user_chunk_map){
@@ -745,16 +737,13 @@ void download_file_multi_peer(std::vector<std::string> users, std::string file_n
         std::vector<int> chunks = user_chunk.second;
         vTreads.push_back(std::thread(single_user_download, cur_usr, chunks, Lchunk_details, file_name, src_loc, tracker_socket));
     }
-
     for(auto i=vTreads.begin(); i!=vTreads.end(); i++){
         if(i->joinable()) i->join();
     }
-
     //Setting the download status = C
     //down_status_update <file_name> <group_id> <status>
     status_cmd = "down_status_update " + file_name + " [C][" + group_name + "]";
     get_response(status_cmd, tracker_socket, response);
-
 }
 
 void handleCMD(std::string input_cmd, int client_socket, int server_port, std::vector<std::thread> &DUThreads){
@@ -787,54 +776,96 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
         input_cmd += (" " + std::to_string(server_port));
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
-        if(strcmp(response,"Login successful\n") == 0)
+        if(strcmp(response,"Login successful\n") == 0){
             isLoggedIn = true;
+            curUser = cmd[1];
+            }
         c_log.Log(DebugP, "Executing login operation"); 
     }
 
     else if(cmd[0] == "create_group"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login to create group\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing create_group operation"); 
     }
 
     else if(cmd[0] == "join_group"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login to join group\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing join_group operation"); 
     }
 
     else if(cmd[0] == "leave_group"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login to leave group\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing leave_group operation"); 
     }
 
     else if(cmd[0] == "list_requests"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing list_requests operation"); 
     }
 
     else if(cmd[0] == "accept_request"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing accept_request operation"); 
     }
 
     else if(cmd[0] == "list_groups"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing list_groups operation"); 
     }
 
     else if(cmd[0] == "list_files"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing list_files operation"); 
     }
 
     else if(cmd[0] == "upload_file"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         int res = verify_upload_file(cmd[1]);
         if(cmd.size()!=3)
             std::cout<<"Wrong format\nPlease try: upload_file <file_path> <group_id>\n";
@@ -859,6 +890,11 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
 
 
     else if(cmd[0] == "download_file"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"Please login\n";
+            return;
+        }
         int resp = verify_download_file(cmd[3]);
         if(cmd.size()!=4)
             std::cout<<"Wrong format\nPlease try: download_file <group_id> <file_name> <destination_path>n";
@@ -885,7 +921,7 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
                     prev = pos + 1;
                 }
 
-                DUThreads.push_back(std::thread(download_file_multi_peer,  users,  cmd[2], cmd[3], cmd[1], client_socket));
+                DUThreads.push_back(std::thread(download_file_multi_peer,  users, cmd[2], cmd[3], cmd[1], client_socket));
             }
 
             else
@@ -895,25 +931,38 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
     }
 
     else if(cmd[0] == "logout"){
+        input_cmd += (" " + curUser);
         if(!isLoggedIn){
             std::cout<<"No users logged in\n";
             return;
         }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
-        if(strcmp(response, "User logged out\n") == 0)
+        if(strcmp(response, "User logged out\n") == 0){
             isLoggedIn = false;
+            curUser = "";
+            }
 
         c_log.Log(DebugP, "Executing logout operation"); 
     }
 
     else if(cmd[0] == "show_downloads"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"No users logged in\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing show_downloads operation"); 
     }
 
     else if(cmd[0] == "stop_share"){
+        input_cmd += (" " + curUser);
+        if(!isLoggedIn){
+            std::cout<<"No users logged in\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
         c_log.Log(DebugP, "Executing stop_share operation"); 
@@ -997,9 +1046,9 @@ int main(int argc, char* argv[]){
 
     while(true){
         // check the tracker is alive or not 
-        char dummy_resp[WORD_SIZE];
-        memset(dummy_resp,0,WORD_SIZE);
-        get_response("keepalive", curTracker.socket, dummy_resp);
+        // char dummy_resp[WORD_SIZE];
+        // memset(dummy_resp,0,WORD_SIZE);
+        // get_response("keepalive", curTracker.socket, dummy_resp);
         
 
         std::string tmp, input_cmd;
