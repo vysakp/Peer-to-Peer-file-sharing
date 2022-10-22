@@ -31,6 +31,7 @@ BasicLogger c_log;
 const char* BasicLogger::filepath = "client_log.txt";
 
 
+
 struct File{
 
     std::string file_name;
@@ -47,7 +48,7 @@ struct File{
 
 };
 
-std::unordered_map<std::string, File> ULFile;
+
 
 struct Server{
 
@@ -61,6 +62,32 @@ struct Server{
     struct sockaddr_in address;
 
 }; 
+
+struct Client
+{
+    int socket;
+    int domain;
+    int service;
+    int protocol;
+    int port;
+    u_long interface;
+};
+
+Client curTracker;
+std::string tracker1_ip;
+std::string tracker2_ip;
+int tracker1_port;
+int tracker2_port;
+bool tracker1_status = true;
+bool tracker2_status = true;
+bool switched = false;
+
+//map of all files
+//filename->File
+std::unordered_map<std::string, File> ULFile;
+
+bool isLoggedIn = false;
+
 
 struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port,  int backlog){
 
@@ -112,15 +139,6 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
     
 }
 
-struct Client
-{
-    int socket;
-    int domain;
-    int service;
-    int protocol;
-    int port;
-    u_long interface;
-};
 
 void connect_to_server(struct Client *client, char* server_ip){
     /* funciton to connect the given client to server ip
@@ -137,11 +155,24 @@ void connect_to_server(struct Client *client, char* server_ip){
     inet_pton(client->domain, server_ip, &server_address.sin_addr);
 
     if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        std::cout<<"Connection failed Server not Live"<<'\n';
+        // std::cout<<"Connection failed server not Live"<<'\n';
         c_log.Log(ErrorP, "Client connection to tracker failed waiting for 1 sec");
-        usleep(1000000);
+        if(strcmp(server_ip,tracker2_ip.c_str())==0){
+            // std::cout<<"Connection failed tracker 2 not Live"<<'\n';
+            tracker2_status = false;
+            }
+        else if(strcmp(server_ip,tracker1_ip.c_str())==0){
+            std::cout<<"Connection failed tracker 1 not Live"<<'\n';
+            tracker1_status = false;
+            }
+        else
+            std::cout<<"Connection failed server not Live"<<'\n';
+        
+        // usleep(1000000);
         // exit(1);
+
     }
+
 
 }
 
@@ -206,18 +237,45 @@ std::string execute_cmd(std::string command) {
 
 }
 
+void switch_tracker(){
+
+    struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, tracker2_port, INADDR_ANY);
+    curTracker = client;
+    connect_to_server(&client, &tracker2_ip[0]);
+    switched = true;
+}
+
+void send_to_tracker2(std::string input_cmd){
+
+    char dummy_resp[WORD_SIZE];
+    memset(dummy_resp,0,WORD_SIZE);
+    struct Client tracker2 = client_constructor(AF_INET, SOCK_STREAM, 0, tracker2_port, INADDR_ANY);
+    connect_to_server(&tracker2, &tracker2_ip[0]);
+    
+    if(tracker2_status){
+        write(tracker2.socket, &input_cmd[0], input_cmd.size());
+        size_t size2 = read(tracker2.socket, dummy_resp, WORD_SIZE);
+    }
+    close(tracker2.socket);
+
+}
+
 void get_response(std::string input_cmd, int client_socket, char* response){
     /*Funciton that sends the input command ot the client socket and stores the
      response in respose argument */
-
+    
     memset(response,0,WORD_SIZE);
 
     write(client_socket, &input_cmd[0], input_cmd.size());
     size_t size = read(client_socket, response, WORD_SIZE);
+    
+    if(!switched)
+        send_to_tracker2(input_cmd);
 
     if(size<=0){
-        std::cout<<"Read operation failed";
-        exit(1);
+        std::cout<<"Read operation failed switching tracker";
+        // exit(1);
+        switch_tracker();
     }
 }
 
@@ -622,7 +680,7 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
     //Reading the chunks from from the server and writing it in the file
     for(int i=0;i<chunks.size();i++){
         //sleeping fow .1s to  reduce the download speed
-        usleep(100000);
+        // usleep(100000);
         input_cmd = "send_chunk ";
         input_cmd += (std::to_string(chunks[i]) + " ");
         input_cmd += file_name;
@@ -632,7 +690,7 @@ void single_user_download(std::string user, std::vector<int> chunks, std::vector
         else
             ReadChunk(peer_ip, peer_port, input_cmd, src_loc + file_name, CHUNK_SIZE);
         
-        verify_chunk_sha(src_loc + file_name, file_name , chunks[i], tracker_socket);
+        // verify_chunk_sha(src_loc + file_name, file_name , chunks[i], tracker_socket);
     }
 
 }
@@ -721,10 +779,16 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
     }
 
     else if(cmd[0] == "login"){
+        if(isLoggedIn){
+            std::cout<<"Please logout to login\n";
+            return;
+        }
         input_cmd += (" " + server_ip);
         input_cmd += (" " + std::to_string(server_port));
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
+        if(strcmp(response,"Login successful\n") == 0)
+            isLoggedIn = true;
         c_log.Log(DebugP, "Executing login operation"); 
     }
 
@@ -831,8 +895,15 @@ void handleCMD(std::string input_cmd, int client_socket, int server_port, std::v
     }
 
     else if(cmd[0] == "logout"){
+        if(!isLoggedIn){
+            std::cout<<"No users logged in\n";
+            return;
+        }
         get_response(input_cmd, client_socket, response);
         std::cout<<response;
+        if(strcmp(response, "User logged out\n") == 0)
+            isLoggedIn = false;
+
         c_log.Log(DebugP, "Executing logout operation"); 
     }
 
@@ -875,6 +946,8 @@ std::vector<std::string> getTrackerInfo(char* path){
     return res;
 }
 
+
+
 int main(int argc, char* argv[]){
     if(argc != 3){
         std::cout << "Give arguments as <peer IP:port> and <tracker info file name>\n";
@@ -898,10 +971,10 @@ int main(int argc, char* argv[]){
     // std::cin>>port;
 
     std::vector<std::string> trackerInfo = getTrackerInfo(argv[2]);
-    std::string tracker1_ip = trackerInfo[0];
-    int tracker1_port = stoi(trackerInfo[1]);
-    std::string tracker2_ip = trackerInfo[2];
-    int tracker2_port = stoi(trackerInfo[3]);
+    tracker1_ip = trackerInfo[0];
+    tracker1_port = stoi(trackerInfo[1]);
+    tracker2_ip = trackerInfo[2];
+    tracker2_port = stoi(trackerInfo[3]);
 
 
     //Running server on thread and calling server function
@@ -909,24 +982,33 @@ int main(int argc, char* argv[]){
     pthread_create(&server_thread, NULL, server_function, &peer_port);
 
     struct Client client = client_constructor(AF_INET, SOCK_STREAM, 0, tracker1_port, INADDR_ANY);
-    char tracker_ip[] = "127.0.0.1";
+    // char tracker_ip[] = "127.0.0.1";
+    curTracker = client;
 
-    connect_to_server(&client, tracker_ip);
+
+    connect_to_server(&client, &tracker1_ip[0]);
+    
 
 
     //ignoring any inputs 
-    std::cin.ignore();
+    // std::cin.ignore();
 
     std::vector<std::thread> DUThreads;
 
     while(true){
+        // check the tracker is alive or not 
+        char dummy_resp[WORD_SIZE];
+        memset(dummy_resp,0,WORD_SIZE);
+        get_response("keepalive", curTracker.socket, dummy_resp);
+        
+
         std::string tmp, input_cmd;
         std::cout<<"Enter command: ";
         std::getline(std::cin,input_cmd);
         if(input_cmd.size()==0)
             continue;
-
-        handleCMD(input_cmd, client.socket, peer_port, DUThreads);
+        
+        handleCMD(input_cmd, curTracker.socket, peer_port, DUThreads);
     }
 
     for(auto i=DUThreads.begin(); i!=DUThreads.end(); i++){
@@ -934,7 +1016,7 @@ int main(int argc, char* argv[]){
     }
 
     pthread_join(server_thread, NULL);
-    close(client.socket);
+    close(curTracker.socket);
 
     return 0;
 }

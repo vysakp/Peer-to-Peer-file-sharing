@@ -655,7 +655,9 @@ void* handle_connection(int  client_socket){
 
             else{
                 AllUsers[cur_user].is_live = false;
+                cur_user = "";
                 write(client_socket, "User logged out\n", 20);
+                
             }
 
         }
@@ -728,6 +730,9 @@ void* handle_connection(int  client_socket){
                 res = "FALSE";
             write(client_socket, res.c_str(), res.size());
             
+        }
+        else if(input_cmd[0] == "keepalive"){
+            write(client_socket, "is_alive", 8);
         }
 
         else {
