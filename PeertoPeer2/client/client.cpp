@@ -141,7 +141,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
 }
 
 
-void connect_to_server(struct Client *client, char* server_ip){
+int  connect_to_server(struct Client *client, char* server_ip){
     /* funciton to connect the given client to server ip
     */
 
@@ -156,14 +156,14 @@ void connect_to_server(struct Client *client, char* server_ip){
     inet_pton(client->domain, server_ip, &server_address.sin_addr);
 
     if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        // std::cout<<"Connection failed server not Live"<<'\n';
+        std::cout<<"Connection failed server not Live"<<'\n';
         c_log.Log(ErrorP, "Client connection to tracker failed waiting for 1 sec");
-        if(strcmp(server_ip,tracker2_ip.c_str())==0){
-            // std::cout<<"Connection failed tracker 2 not Live"<<'\n';
+        if(client->port == tracker2_port){
+            std::cout<<"Tracker 2 not Live"<<'\n';
             tracker2_status = false;
             }
-        else if(strcmp(server_ip,tracker1_ip.c_str())==0){
-            std::cout<<"Connection failed tracker 1 not Live"<<'\n';
+        else if(client->port == tracker1_port){
+            std::cout<<"Tracker 1 not Live"<<'\n';
             tracker1_status = false;
             }
         else
@@ -173,6 +173,7 @@ void connect_to_server(struct Client *client, char* server_ip){
         // exit(1);
 
     }
+    return client_fd;
 
 
 }
@@ -274,7 +275,7 @@ void get_response(std::string input_cmd, int client_socket, char* response){
     //     send_to_tracker2(input_cmd);
 
     if(size<=0){
-        std::cout<<"Read operation failed switching tracker";
+        std::cout<<"Tracker 1 down, switching tracker.\nPlease re-enter the command\n";
         // exit(1);
         switch_tracker();
     }
@@ -1034,8 +1035,11 @@ int main(int argc, char* argv[]){
     // char tracker_ip[] = "127.0.0.1";
     curTracker = client;
 
-
-    connect_to_server(&client, &tracker1_ip[0]);
+    
+    int res = connect_to_server(&client, &tracker1_ip[0]);
+    //check the tracker 1 is alive or not
+    if(res<=0)
+        switch_tracker();
     
 
 

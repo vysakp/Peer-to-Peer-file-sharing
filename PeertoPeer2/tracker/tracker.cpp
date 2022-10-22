@@ -441,7 +441,11 @@ int connect_to_server(struct Client *client, char* server_ip){
     inet_pton(client->domain, server_ip, &server_address.sin_addr);
 
     if((client_fd = connect(client->socket, (struct sockaddr*)&server_address, sizeof(server_address)))<0){
-        std::cout<<"Connection failed server not Live"<<'\n';
+        // std::cout<<"Connection failed server not Live"<<'\n';
+        if(client->port == peerTrackerPort )
+            std::cout<<"Peer tracker not Live"<<'\n';
+        else
+            std::cout<<"Connection failed server not Live"<<'\n';
         return 0;
         // usleep(1000000);
         // exit(1);
@@ -536,7 +540,7 @@ void* handle_connection(int  client_socket){
         else if(input_cmd[0] == "q_create_user" && curTracker == 2){
            
             create_new_user(input_cmd[1],input_cmd[2]);
-            std::cout<<"synced";
+            std::cout<<"<synced>\n";
             // write(client_socket, "New user created\n", 17);
             std::cout<<"New user "<<input_cmd[1]<<" created"<<'\n';
                 
@@ -550,7 +554,7 @@ void* handle_connection(int  client_socket){
             else if(AllUsers.find(input_cmd[1])==AllUsers.end())
                 write(client_socket, "User doesn't exist\n", 19);
             else if(AllUsers[input_cmd[1]].user_pwd!=input_cmd[2])
-                write(client_socket, "Incorrect Password\n", 28);
+                write(client_socket, "Incorrect Password\n", 19);
             else if(AllUsers[input_cmd[1]].is_live)
                 write(client_socket, "User have an active session\n", 28);
             else{
@@ -576,14 +580,14 @@ void* handle_connection(int  client_socket){
             AllUsers[input_cmd[1]].server_ip = input_cmd[3];
             AllUsers[input_cmd[1]].port = stoi(input_cmd[4]);
             std::cout<<"User "<<cur_user<<" Logged in"<<'\n';
-            std::cout<<"synced"<<'\n';
+            std::cout<<"<synced>"<<'\n';
             
         }
 
         else if(input_cmd[0] == "create_group"){
             std::string t_cur_user = input_cmd[2];
             if(input_cmd.size()!=3){
-                write(client_socket, "Wrong format\nPlease try: create_group <group_id>\n", 49);
+                write(client_socket, "Wrong format\nPlease try: create_group <group_id>\n", 50);
                 }
             else if(!AllUsers[t_cur_user].is_live){
                 write(client_socket, "Please log in to create a group\n", 32);}
@@ -606,7 +610,7 @@ void* handle_connection(int  client_socket){
             std::string q_cur_user = input_cmd[2];
             int res = add_group(q_cur_user, input_cmd[1]);
             std::cout<<"Group "<<input_cmd[1]<<" created by user "<<q_cur_user<<'\n';
-            std::cout<<"synced"<<'\n';          
+            std::cout<<"<synced>"<<'\n';          
 
         }
 
@@ -616,15 +620,15 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=3)
                 write(client_socket, "Wrong format\nPlease try: join_group <group_id>\n", 47);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to join a group\n", 32);
+                write(client_socket, "Please log in to join a group\n", 31);
             else {
                 int res = join_group(t_cur_user,input_cmd[1]);
                 if(res==-1)
-                    write(client_socket, "Group does not exists\n", 32);    
+                    write(client_socket, "Group does not exists\n", 23);    
                 else if(res==0)
-                    write(client_socket, "Request in pending state\n", 32);
+                    write(client_socket, "Request in pending state\n", 26);
                 else if(res==-2)
-                     write(client_socket, "Already a member of the group\n", 32);
+                     write(client_socket, "Already a member of the group\n", 31);
                 else{
                     write(client_socket, "Request sent\n", 32);
                     if(curTracker == 1)
@@ -639,7 +643,7 @@ void* handle_connection(int  client_socket){
             std::string q_cur_user = input_cmd[2];
             int res = join_group(q_cur_user,input_cmd[1]);;
             std::cout<<"Group "<<input_cmd[1]<<" join request send by user "<<q_cur_user<<'\n';
-            std::cout<<"synced"<<'\n';          
+            std::cout<<"<synced>"<<'\n';          
         }
 
         else if(input_cmd[0] == "leave_group"){
@@ -652,12 +656,12 @@ void* handle_connection(int  client_socket){
             else{
                 int res = leave_group(t_cur_user, input_cmd[1]);
                 if(res == -1){
-                    write(client_socket, "Group does not exists\n", 32);
+                    write(client_socket, "Group does not exists\n", 23);
                 }
                 else if(res == 0)
-                    write(client_socket, "Not a member of the group\n", 32);
+                    write(client_socket, "Not a member of the group\n", 27);
                 else{
-                    write(client_socket, "You left the group\n", 32);
+                    write(client_socket, "You left the group\n", 20);
                     std::cout<<t_cur_user<<" left group "<<input_cmd[1]<<'\n';
                     if(curTracker == 1)
                         send_to_tracker2("q_" + input );
@@ -670,7 +674,7 @@ void* handle_connection(int  client_socket){
             std::string q_cur_user = input_cmd[2];
             int res = leave_group(q_cur_user, input_cmd[1]);
             std::cout<<q_cur_user<<" left group "<<input_cmd[1]<<'\n';
-            std::cout<<"synced"<<'\n';          
+            std::cout<<"<synced>"<<'\n';          
         }
 
         else if(input_cmd[0] == "list_requests"){
@@ -684,11 +688,11 @@ void* handle_connection(int  client_socket){
                 int res = list_group_req(t_cur_user, input_cmd[1]);
 
                 if(res==-1)
-                    write(client_socket, "Group does not exists\n", 32);
+                    write(client_socket, "Group does not exists\n", 23);
                 else if(res==0)
-                    write(client_socket, "You are not the owner to this group\n", 32);
+                    write(client_socket, "You are not the owner to this group\n", 37);
                 else if(AllGroups[input_cmd[1]].requests.empty())
-                    write(client_socket, "No pending requests\n", 32);
+                    write(client_socket, "No pending requests\n", 21);
                 else {
                     std::string all_reqs = "";
                     for(auto req : AllGroups[input_cmd[1]].requests)
@@ -710,22 +714,22 @@ void* handle_connection(int  client_socket){
                 int res = accept_group_req(t_cur_user, input_cmd[2], input_cmd[1]);
                 switch(res){
                     case -2: 
-                        write(client_socket, "Request not present\n", 32);
+                        write(client_socket, "Request not present\n", 21);
                         break;
                     case -1:
-                        write(client_socket, "Group does not exists\n", 32);
+                        write(client_socket, "Group does not exists\n", 23);
                         break;
                     case 0:
-                        write(client_socket, "You are not the owner to this group\n", 32);
+                        write(client_socket, "You are not the owner to this group\n", 37);
                         break;
                     case 1:
-                        write(client_socket, "Request accepted\n", 32);
+                        write(client_socket, "Request accepted\n", 18);
                         std::cout<<t_cur_user<<" accepted  "<<input_cmd[2]<<" to group "<<input_cmd[1]<<'\n';
                         if(curTracker == 1)
                             send_to_tracker2("q_" + input);
                         break;
                     default:
-                        write(client_socket, "Welcome to Narnia\n", 20);
+                        write(client_socket, "Welcome to Narnia\n", 19);
                 }
             }
 
@@ -735,7 +739,7 @@ void* handle_connection(int  client_socket){
             std::string q_cur_user = input_cmd[3];
             int res = accept_group_req(q_cur_user, input_cmd[2], input_cmd[1]);
             std::cout<<q_cur_user<<" accepted  "<<input_cmd[2]<<" to group "<<input_cmd[1]<<'\n';
-            std::cout<<"synced"<<'\n';          
+            std::cout<<"<synced>"<<'\n';          
         }
 
         else if(input_cmd[0] == "list_groups"){
@@ -743,7 +747,7 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: list_groups\n", 37);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to get requests\n", 32);
+                write(client_socket, "Please log in to get requests\n", 31);
             else{
                 
                 if(AllGroups.empty())
@@ -767,14 +771,14 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=3)
                 write(client_socket, "Wrong format\nPlease try: list_files <group_id>\n", 48);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to get requests\n", 32);
+                write(client_socket, "Please log in to get requests\n", 31);
             else{
                 int res = list_files(t_cur_user, input_cmd[1]);
                 if(res==-1){
-                    write(client_socket, "Group does not exists\n", 32); 
+                    write(client_socket, "Group does not exists\n", 23); 
                 }
                 else if(res==0){
-                    write(client_socket, "Please join the group to get details\n", 32); 
+                    write(client_socket, "Please join the group to get details\n", 38); 
                 }
                 else{
                     if(AllGroups[input_cmd[1]].files.empty())
@@ -799,11 +803,11 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=4)
                 write(client_socket, "Wrong format\nPlease try: upload_file <file_path> <group_id>\n", 61);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to accept requests\n", 32);
+                write(client_socket, "Please log in to accept requests\n", 33);
             else{
                 int res = upload_file(t_cur_user, input_cmd[1], input_cmd[2]);
                 if(res==-1){
-                    write(client_socket, "Group does not exists\n", 32); 
+                    write(client_socket, "Group does not exists\n", 23); 
                 }
                 else if(res==0){
                     write(client_socket, "Please join the group to upload\n", 32); 
@@ -838,17 +842,17 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=5)
                 write(client_socket, "Wrong format\nPlease try: download_file <group_id> <file_name> <destination_path>\n", 81);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to accept requests\n", 32);
+                write(client_socket, "Please log in to accept requests\n", 33);
             else{
                 std::string base_filename = input_cmd[2].substr(input_cmd[2].find_last_of("/\\") + 1);
                 int res = download_file(t_cur_user, input_cmd[1], base_filename, input_cmd[3]);
                 if(res == -1)
-                    write(client_socket, "Group does not exists\n", 32);
+                    write(client_socket, "Group does not exists\n", 23);
                 else if(res==0){
                     write(client_socket, "Please join the group to upload\n", 32); 
                 }
                 else if(res==-2){
-                    write(client_socket, "Group doesn't have given file\n", 32);
+                    write(client_socket, "Group doesn't have given file\n", 31);
                 }
                 else{
                     std::string all_users = "User list\n";
@@ -872,15 +876,15 @@ void* handle_connection(int  client_socket){
             if(input_cmd.size()!=2)
                 write(client_socket, "Wrong format\nPlease try: logout\n", 32);
             else if(!AllUsers[t_cur_user].is_live){
-                write(client_socket, "User not logged in\n", 32);
+                write(client_socket, "User not logged in\n", 20);
             }
             else if(!AllUsers[t_cur_user].is_live)
-                 write(client_socket, "User already logged out\n", 32);
+                 write(client_socket, "User already logged out\n", 25);
 
             else{
                 AllUsers[t_cur_user].is_live = false;
                 cur_user = "";
-                write(client_socket, "User logged out\n", 20);
+                write(client_socket, "User logged out\n", 17);
                 if(curTracker == 1)
                     send_to_tracker2("q_" + input);
                 
@@ -898,10 +902,10 @@ void* handle_connection(int  client_socket){
             std::string t_cur_user = input_cmd[1];
 
             if(input_cmd.size()!=2)
-                write(client_socket, "Wrong format\nPlease try: show_downloads\n", 32);
+                write(client_socket, "Wrong format\nPlease try: show_downloads\n", 42);
 
             else if(AllUsers[t_cur_user].down_status.empty())
-                write(client_socket, "No downloads!", 20);
+                write(client_socket, "No downloads!\n", 14);
             else{
             std::string all_status = "";
             for(auto status : AllUsers[t_cur_user].down_status)
@@ -915,19 +919,19 @@ void* handle_connection(int  client_socket){
         else if(input_cmd[0] == "stop_share"){
             std::string t_cur_user = input_cmd[3];
             if(input_cmd.size()!=4)
-                write(client_socket, "Wrong format\nPlease try: stop_share <group_id> <file_name>\n", 48);
+                write(client_socket, "Wrong format\nPlease try: stop_share <group_id> <file_name>\n", 62);
             else if(!AllUsers[t_cur_user].is_live)
-                write(client_socket, "Please log in to accept requests\n", 32);
+                write(client_socket, "Please log in to accept requests\n", 33);
             else{
                 int res = stop_share(input_cmd[2], input_cmd[1], t_cur_user);
                 if(res == -2)
-                    write(client_socket, "Group deosn't exist\n", 32);
+                    write(client_socket, "Group deosn't exist\n", 21);
                 else if(res == -1)
-                    write(client_socket, "File not found\n", 32);
+                    write(client_socket, "File not found\n", 16);
                 else if(res == 0)
-                    write(client_socket, "Not a member of the group\n", 32);
+                    write(client_socket, "Not a member of the group\n", 27);
                 else{
-                    write(client_socket, "Stopped sharing the file\n", 32);
+                    write(client_socket, "Stopped sharing the file\n", 26);
                     if(curTracker == 1)
                             send_to_tracker2("q_" + input);
                 }
