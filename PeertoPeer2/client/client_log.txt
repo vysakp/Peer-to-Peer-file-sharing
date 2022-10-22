@@ -42584,3 +42584,22 @@
 22/10/2022 21:51:56 Error:	Client connection to tracker failed waiting for 1 sec
 22/10/2022 21:51:56 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
 22/10/2022 21:52:6 Debug:	Executing create_user operation
+22/10/2022 22:8:36 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:8:36 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4555Backlog:20
+22/10/2022 22:8:36 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:8:36 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:8:40 Debug:	Executing create_user operation
+22/10/2022 22:10:8 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:10:8 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4555Backlog:20
+22/10/2022 22:10:8 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:10:12 Debug:	Executing create_user operation
+22/10/2022 22:12:17 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:12:17 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4555Backlog:20
+22/10/2022 22:12:17 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:12:22 Debug:	Executing create_user operation
+22/10/2022 22:12:34 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:12:34 Debug:	Creating a server with Domain: 2Service:1Protocol:0Interface: 0Port: 4563Backlog:20
+22/10/2022 22:12:34 Debug:	Creating a server side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:12:34 Error:	Client connection to tracker failed waiting for 1 sec
+22/10/2022 22:12:34 Debug:	Creating a client side socket with Domain: 2Service:1Protocol:0
+22/10/2022 22:12:40 Debug:	Executing create_user operation

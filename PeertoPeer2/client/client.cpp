@@ -1038,7 +1038,7 @@ int main(int argc, char* argv[]){
     
     int res = connect_to_server(&client, &tracker1_ip[0]);
     //check the tracker 1 is alive or not
-    if(res<=0)
+    if(res<0)
         switch_tracker();
     
 
